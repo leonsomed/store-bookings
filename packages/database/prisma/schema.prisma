@@ -3,16 +3,304 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+enum UserRole {
+  owner
+  student
+}
+
+enum LessonRole {
+  driver
+  observer
+}
+
+enum ProductType {
+  lesson
+  course
+}
+
+enum ProductId {
+  dmvLesson
+  driver1
+  driver2
+  observer1
+  observer2
+  course
+}
+
+enum BundleId {
+  standard6
+  standard10
+  de6
+  de10
+  standard7x7
+}
+
+enum PriceSchemeRule {
+  percentageIncrease
+  percentageDecrease
+  centsIncrease
+  centsDecrease
+}
+
+enum State {
+  california
+  texas
+}
+
+enum VoidReason {
+  noShow
+  expired
+  other
+}
+
+enum TransactionCategory {
+  stripe
+  cash
+}
+
+enum Initiator {
+  student
+  instructor
+  support
+}
+
+enum ActivityLogType {
+  transactionLog
+  updateByProductPriceLog
+  scheduleLessonProductLog
+  cancelScheduleLessonProductLog
+  releaseProductFundsLog
+  cancelReleaseProductFundsLog
+  voidProductLog
+  cancelVoidProductLog
+  setProductRegionLog
+  newLessonProductLog
+  newCourseProductLog
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
+  id String @id @default(uuid())
+  email String @unique
+  firstName String?
+  lastName String?
+
+  address Address? @relation(fields: [addressId], references: [id])
+  addressId String?
+
+  instructor Instructor?
+  lessonSlots LessonSlot[]
+  accounts AccountsOnUsers[]
+  activityLogs ActivityLog[]
+}
+
+model Address {
+  id String @id @default(uuid())
+  street String
+  street2 String?
+  city String
+  state String
+  zip String
+  country String
+  coords Unsupported("geometry(Point, 4326)")
+
+  slots LessonSlot[]
+  users User[]
+
+  @@index([coords], name: "coords_idx", type: Gist)
+}
+
+model Instructor {
+  id String @id @default(uuid())
+
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  lessonSlots LessonSlot[]
+}
+
+model LessonSlot {
+  id String @id @default(uuid())
+  startTimestamp DateTime
+  endTimestamp DateTime
+  durationMinutes Int
+
+  instructor Instructor @relation(fields: [instructorId], references: [id])
+  instructorId String
+
+  address Address @relation(fields: [addressId], references: [id])
+  addressId String
+
+  student User? @relation(fields: [studentId], references: [id])
+  studentId String?
+}
+
+model Account {
+  id String @id @default(uuid())
+  name String
+
+  users AccountsOnUsers[]
+  activityLogs ActivityLog[]
+}
+
+model AccountsOnUsers {
+  @@id([accountId, userId])
+  account Account @relation(fields: [accountId], references: [id])
+  accountId String
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  role UserRole
+}
+
+model Product {
+  id ProductId @id
+  type ProductType
+  role LessonRole?
+  durationMinutes Int?
+  products ProductOnBundle[]
+}
+
+model Bundle {
+  id BundleId @id
+  products ProductOnBundle[]
+}
+
+model ProductOnBundle {
+  @@id([bundleId, productId])
+  bundle Bundle @relation(fields: [bundleId], references: [id])
+  bundleId BundleId
+  product Product @relation(fields: [productId], references: [id])
+  productId ProductId
+  quantity Int
+}
+
+model PriceScheme {
+  id String @id @default(uuid())
+  name String
+
+  parent PriceScheme? @relation("selfPriceScheme", fields: [parentId], references: [id])
+  parentId String?
+  childPriceSchemes PriceScheme[] @relation("selfPriceScheme")
+
+  region Region[]
+}
+
+// NOTE this model is not used in relationships with products
+// becaue price discovery is more complex, so we dont specify
+// relationship models for priceSchemeId or itemId
+model ProductOnPriceScheme {
+  @@id([priceSchemeId, itemId])
+  priceSchemeId String
+  itemId String
+  cents Int
+}
+// NOTE this model is not used in relationships with products
+// becaue price discovery is more complex, so we dont specify
+// relationship models for priceSchemeId or itemId
+model PriceModifierOnPriceScheme {
+  id String @id @default(uuid())
+  priceSchemeId String
+  itemId String?
+  rule PriceSchemeRule
+  cents Int
+  percentage Int
+}
+
+model Region {
+  id String @id
+  name String
+  priceScheme PriceScheme @relation(fields: [priceSchemeId], references: [id])
+  priceSchemeId String
+  geo Unsupported("geometry(Polygon, 4326)")
+
+  @@index([geo], name: "geo_idx", type: Gist)
+}
+
+model ActivityLog {
+  id String @id @default(uuid())
+  type ActivityLogType
+  timestamp DateTime @default(now())
+  note String
+
+  account Account @relation(fields: [accountId], references: [id])
+  accountId String
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  orderId String
+
+  // ==========================================
+  // +++++++  TransactionLog
+  // ==========================================
+  transactionCategory TransactionCategory?
+  cents Int?
+  OptionalStripeChargeId String?
+  OptionalStripeCustomerId String?
+  // ==========================================
+  // +++++++  UpdateByProductPriceLog
+  // ==========================================
+  productId ProductId?
+  centsDiff Int?
+  // ==========================================
+  // +++++++  UpdateByProductPriceLog
+  // ==========================================
+  // productId ProductId?
+  // centsDiff Int?
+  // ==========================================
+  // +++++++  ScheduleLessonProductLog
+  // ==========================================
+  // productId ProductId?
+  instructorId String?
+  studentId String?
+  slotId String?
+  // ==========================================
+  // +++++++  CancelScheduleLessonProductLog
+  // ==========================================
+  // productId ProductId?
+  initiator Initiator?
+  // ==========================================
+  // +++++++  ReleaseProductFundsLog
+  // ==========================================
+  // ...
+  // ==========================================
+  // +++++++  CancelReleaseProductFundsLog
+  // ==========================================
+  // productId ProductId?
+  // ==========================================
+  // +++++++  VoidProductLog
+  // ==========================================
+  // productId ProductId?
+  reason VoidReason?
+  // ==========================================
+  // +++++++  CancelVoidProductLog
+  // ==========================================
+  // productId ProductId?
+  // ==========================================
+  // +++++++  SetProductRegionLog
+  // ==========================================
+  // productId ProductId?
+  regionId String?
+  // ==========================================
+  // +++++++  NewLessonProductLog
+  // ==========================================
+  // regionId String?
+  // productId ProductId?
+  productType ProductType?
+  role LessonRole?
+  durationMinutes Int?
+  // cents Int?
+  // ==========================================
+  // +++++++  NewCourseProductLog
+  // ==========================================
+  // regionId String?
+  // productId ProductId?
+  // productType ProductType?
+  state State?
+  // cents Int?
+  // ==========================================
 }

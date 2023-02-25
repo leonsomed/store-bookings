@@ -5,7 +5,8 @@ import type { User } from '@prisma/client';
 const DEFAULT_USERS = [
   // Add your own user to pre-populate the database with
   {
-    name: 'Tim Apple',
+    firstName: 'Tim',
+    lastName: 'Apple',
     email: 'tim@apple.com',
   },
 ] as Array<Partial<User>>;
