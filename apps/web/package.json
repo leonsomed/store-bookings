@@ -9,17 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "latest",
+    "database": "*",
+    "next": "^13.2.x",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tw-elements": "^1.0.0-beta1"
   },
   "devDependencies": {
     "@types/node": "^17.0.12",
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
+    "autoprefixer": "^10.4.13",
     "config": "*",
-    "database": "*",
     "eslint": "^7.32.0",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.7",
     "tsconfig": "*",
     "typescript": "^4.5.3"
   }
