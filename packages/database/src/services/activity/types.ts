@@ -11,6 +11,7 @@ interface BaseActivityLog {
   accountId: string;
   orderId: string;
   userId: string;
+  authorId: string;
   timestamp: number;
   note: string;
 }
