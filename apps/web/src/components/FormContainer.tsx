@@ -7,6 +7,7 @@ import { CloseIcon } from '../components/icons/CloseIcon';
 interface FormContainerProps {
   children: React.ReactNode;
   title: string;
+  disabled: boolean;
   submitLabel?: string;
   dismissLabel?: string;
   onSubmit: () => void;
@@ -16,6 +17,7 @@ interface FormContainerProps {
 export function FormContainer({
   children,
   title,
+  disabled,
   submitLabel = 'Submit',
   dismissLabel = 'Cancel',
   onDismiss,
@@ -32,8 +34,12 @@ export function FormContainer({
       <Heading>{title}</Heading>
       {children}
       <div className="flex justify-end space-x-4">
-        <SecondaryButton onClick={onDismiss}>{dismissLabel}</SecondaryButton>
-        <PrimaryButton onClick={onSubmit}>{submitLabel}</PrimaryButton>
+        <SecondaryButton disabled={disabled} onClick={onDismiss}>
+          {dismissLabel}
+        </SecondaryButton>
+        <PrimaryButton disabled={disabled} onClick={onSubmit}>
+          {submitLabel}
+        </PrimaryButton>
       </div>
     </div>
   );

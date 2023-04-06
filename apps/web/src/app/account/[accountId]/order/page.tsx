@@ -1,6 +1,6 @@
 import { getServices } from 'database';
 import { ModalWrapper } from '../../../../components/ModalWrapper';
-import { PageParamsProps } from '../../../../services/navigation';
+import { PageParamsProps, getParam } from '../../../../services/navigation';
 import { NewOrderForm } from './NewOrderForm';
 
 export default async function NewOrderPage({ params }: PageParamsProps) {
@@ -9,10 +9,15 @@ export default async function NewOrderPage({ params }: PageParamsProps) {
     productService.getBundles(),
     productService.getProducts(),
   ]);
+  const accountId = getParam('accountId', params);
 
   return (
     <ModalWrapper>
-      <NewOrderForm products={products} bundles={bundles} />
+      <NewOrderForm
+        accountId={accountId}
+        products={products}
+        bundles={bundles}
+      />
     </ModalWrapper>
   );
 }

@@ -11,8 +11,15 @@ import { useRouter } from 'next/navigation';
 import { formatDollars } from '../../../../services/format';
 import { Checkbox } from '../../../../components/Checkbox';
 import { ItemEntryCard } from './ItemEntryCard';
+import { api } from '../../../../services/api';
+import { Alert } from '../../../../components/Alert';
+import { routes } from '../../../../services/navigation';
 
-type Item = Product & { priceDollars: string; itemId: string; state?: string };
+export type Item = Product & {
+  priceDollars: string;
+  itemId: string;
+  state?: string;
+};
 
 export interface ItemEntry {
   id: string;
@@ -25,6 +32,7 @@ export interface ItemEntry {
 interface NewOrderFormProps {
   products: Product[];
   bundles: Bundle[];
+  accountId: string;
 }
 
 interface NewOrderFormState {
@@ -59,18 +67,31 @@ const newOrderFormSchema = Yup.object().shape({
         })
       ),
     })
-  ),
+  ).min(1, 'Please add at least one item'),
 });
 
-export function NewOrderForm({ products, bundles }: NewOrderFormProps) {
+export function NewOrderForm({
+  products,
+  bundles,
+  accountId,
+}: NewOrderFormProps) {
   const router = useRouter();
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: NewOrderFormState,
     formik: FormikHelpers<NewOrderFormState>
   ) => {
-    // TODO
-    console.log(values);
+    formik.setStatus(undefined);
+    formik.setSubmitting(true);
+
+    try {
+      await api.newOrder({ items: values.items, accountId });
+      router.push(routes.accountDetails(accountId));
+    } catch (e) {
+      console.error(e);
+      formik.setStatus({ message: 'There was a problem, please try again.' });
+      formik.setSubmitting(false);
+    }
   };
 
   const handleDismiss = () => {
@@ -92,6 +113,7 @@ export function NewOrderForm({ products, bundles }: NewOrderFormProps) {
 
   return (
     <Formik
+      isInitialValid={false}
       initialValues={DEFAULT_FORM_STATE}
       onSubmit={handleSubmit}
       validationSchema={newOrderFormSchema}
@@ -153,6 +175,7 @@ export function NewOrderForm({ products, bundles }: NewOrderFormProps) {
         return (
           <FormContainer
             title="New Order"
+            disabled={!formikProps.isValid || formikProps.isSubmitting}
             onDismiss={handleDismiss}
             onSubmit={formikProps.submitForm}
           >
@@ -184,6 +207,10 @@ export function NewOrderForm({ products, bundles }: NewOrderFormProps) {
                 onRemove={handleRemoveItem}
               />
             ))}
+
+            {formikProps.status?.message && (
+              <Alert severity="error">{formikProps.status.message}</Alert>
+            )}
           </FormContainer>
         );
       }}

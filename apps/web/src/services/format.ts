@@ -12,3 +12,6 @@ export function formatDollars(dollars: number) {
   if (isNaN(dollars)) return '$...';
   return formatter.format(dollars);
 }
+
+export const dollarsToCents = (dollars: string) =>
+  parseInt(dollars.replace('.', ''));
