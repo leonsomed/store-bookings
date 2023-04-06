@@ -6,28 +6,49 @@ import {
   VoidReason,
 } from '@prisma/client';
 
-interface BaseActivityLog {
+interface OrderLine {
+  id: string;
+  purchaseDate: Date;
+  description: string;
+  centsItemsTotal: number;
+  centsTransactionsTotal: number;
+}
+
+interface ItemLine {
+  id: string;
+  purchaseDate: Date;
+  lessonDate: Date;
+  description: string;
+  price: number;
+}
+
+export interface ItemActivityState {
+  orderLines: OrderLine[];
+  itemLines: ItemLine[];
+}
+
+export interface BaseActivityLog {
   id: string;
   accountId: string;
   orderId: string;
   userId: string;
   authorId: string;
-  timestamp: number;
+  timestamp: Date;
   note: string;
 }
 
 export interface TransactionLog extends BaseActivityLog {
   type: 'TransactionLog';
   category: TransactionCategory;
-  amount: number;
-  stripeChargeId?: string;
-  stripeCustomerId?: string;
+  cents: number;
+  stripeChargeId?: string | null;
+  stripeCustomerId?: string | null;
 }
 
 export interface UpdateByProductPriceLog extends BaseActivityLog {
   type: 'UpdateByProductPriceLog';
   productId: string;
-  priceDiff: number;
+  centsDiff: number;
 }
 
 export interface ScheduleLessonProductLog extends BaseActivityLog {
@@ -76,8 +97,8 @@ export interface NewLessonProductLog extends BaseActivityLog {
   productId: string;
   productType: 'lesson';
   role: LessonRole;
-  duration: number;
-  price: number;
+  durationMinutes: number;
+  priceCents: number;
 }
 export interface NewCourseProductLog extends BaseActivityLog {
   type: 'NewCourseProductLog';
@@ -85,7 +106,7 @@ export interface NewCourseProductLog extends BaseActivityLog {
   productId: string;
   productType: 'course';
   state: State;
-  price: number;
+  priceCents: number;
 }
 
 export type ActivityLog =

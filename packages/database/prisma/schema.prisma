@@ -240,8 +240,8 @@ model ActivityLog {
   // ==========================================
   transactionCategory TransactionCategory?
   cents Int?
-  OptionalStripeChargeId String?
-  OptionalStripeCustomerId String?
+  optionalStripeChargeId String?
+  optionalStripeCustomerId String?
   // ==========================================
   // +++++++  UpdateByProductPriceLog
   // ==========================================

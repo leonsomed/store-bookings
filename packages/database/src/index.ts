@@ -1,2 +1,2 @@
 export * from './client';
-export { getServices } from './services';
+export * from './services';
