@@ -24,7 +24,8 @@
     "studio": "prisma studio"
   },
   "dependencies": {
-    "@prisma/client": "^4.10.1"
+    "@prisma/client": "^4.10.1",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "config": "*",

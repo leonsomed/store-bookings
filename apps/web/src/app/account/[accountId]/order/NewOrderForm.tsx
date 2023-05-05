@@ -2,13 +2,13 @@
 
 import { Formik, FormikHelpers } from 'formik';
 import { nanoid } from 'nanoid';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import { Bundle, Product } from 'database';
 import { Select } from '../../../../components/Select';
 import { ChangeEventHandler, useMemo } from 'react';
 import { FormContainer } from '../../../../components/FormContainer';
 import { useRouter } from 'next/navigation';
-import { formatDollars } from '../../../../services/format';
+import { dollarsToCents, formatDollars } from '../../../../services/format';
 import { Checkbox } from '../../../../components/Checkbox';
 import { ItemEntryCard } from './ItemEntryCard';
 import { api } from '../../../../services/api';
@@ -26,7 +26,7 @@ export interface ItemEntry {
   itemId: string;
   description: string;
   isBundle: boolean;
-  items: Array<Item>;
+  items: Item[];
 }
 
 interface NewOrderFormProps {
@@ -51,23 +51,26 @@ const getTotalDollars = (items: ItemEntry[]) =>
     0
   );
 
-const newOrderFormSchema = Yup.object().shape({
-  items: Yup.array(
-    Yup.object().shape({
-      items: Yup.array(
-        Yup.object().shape({
-          type: Yup.string().required('Required'),
-          priceDollars: Yup.number()
-            .min(1, 'Please add a price')
-            .required('Required'),
-          state: Yup.string().when('type', {
-            is: (type) => type === 'course',
-            then: (schema) => schema.required('Required'),
-          }),
-        })
-      ),
-    })
-  ).min(1, 'Please add at least one item'),
+const newOrderFormSchema = yup.object().shape({
+  items: yup
+    .array(
+      yup.object().shape({
+        items: yup.array(
+          yup.object().shape({
+            type: yup.string().required('Required'),
+            priceDollars: yup
+              .number()
+              .min(1, 'Please add a price')
+              .required('Required'),
+            state: yup.string().when('type', {
+              is: (type) => type === 'course',
+              then: (schema) => schema.required('Required'),
+            }),
+          })
+        ),
+      })
+    )
+    .min(1, 'Please add at least one item'),
 });
 
 export function NewOrderForm({
@@ -85,7 +88,23 @@ export function NewOrderForm({
     formik.setSubmitting(true);
 
     try {
-      await api.newOrder({ items: values.items, accountId });
+      const description = values.items
+        .map((item) => item.description)
+        .join(', ');
+      const items = values.items.flatMap((item) =>
+        item.items.map((subItem) => ({
+          id: subItem.id,
+          state: subItem.state,
+          priceCents: dollarsToCents(subItem.priceDollars),
+        }))
+      );
+      await api.newOrder({
+        items,
+        description,
+        accountId,
+        regionId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO form must ask for the region
+        userId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO from must ask for the user, since accounts have multiple
+      });
       router.push(routes.accountDetails(accountId));
     } catch (e) {
       console.error(e);

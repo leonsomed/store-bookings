@@ -96,4 +96,8 @@ export class ProductService {
   async getProducts(): Promise<Product[]> {
     return products;
   }
+
+  async getProduct(id: string): Promise<Product | undefined> {
+    return products.find((n) => n.id === id);
+  }
 }

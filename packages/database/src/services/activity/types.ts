@@ -1,12 +1,13 @@
 import {
   Initiator,
   LessonRole,
+  ProductType,
   State,
   TransactionCategory,
   VoidReason,
 } from '@prisma/client';
 
-interface OrderLine {
+export interface OrderLine {
   id: string;
   purchaseDate: Date;
   description: string;
@@ -14,12 +15,14 @@ interface OrderLine {
   centsTransactionsTotal: number;
 }
 
-interface ItemLine {
+export interface ItemLine {
   id: string;
+  orderId: string;
+  productType: ProductType;
   purchaseDate: Date;
-  lessonDate: Date;
+  lessonDate?: Date;
   description: string;
-  price: number;
+  priceCents: number;
 }
 
 export interface ItemActivityState {
@@ -121,3 +124,16 @@ export type ActivityLog =
   | NewLessonProductLog
   | NewCourseProductLog
   | SetProductRegionLog;
+
+export interface NewOrderPayload {
+  userId: string;
+  authorId: string;
+  accountId: string;
+  regionId: string;
+  description: string;
+  items: Array<{
+    id: string;
+    priceCents: number;
+    state?: string;
+  }>;
+}

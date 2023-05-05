@@ -1,11 +1,19 @@
+import { uuid } from 'uuidv4';
 import { Services } from '..';
 import {
   ActivityLog as DBActivityLog,
   ActivityLogType,
   TransactionCategory,
+  ProductId,
+  State,
 } from '@prisma/client';
 import { prisma } from '../../client';
-import { ActivityLog, BaseActivityLog, ItemActivityState } from './types';
+import {
+  ActivityLog,
+  BaseActivityLog,
+  ItemActivityState,
+  NewOrderPayload,
+} from './types';
 
 const INITIAL_ITEM_ACTIVITY_STATE: ItemActivityState = {
   orderLines: [],
@@ -118,7 +126,66 @@ export class ItemActivityService {
   }
 
   static itemActivityReducer(state: ItemActivityState, log: ActivityLog) {
-    return state;
+    switch (log.type) {
+      case 'NewLessonProductLog':
+      case 'NewCourseProductLog':
+        const order = state.orderLines.find(
+          (order) => order.id === log.orderId
+        );
+        const itemLines = state.itemLines.concat({
+          id: log.id,
+          orderId: log.orderId,
+          productType: log.productType,
+          description: log.note,
+          priceCents: log.priceCents,
+          purchaseDate: log.timestamp,
+        });
+
+        if (order) {
+          return {
+            ...state,
+            itemLines,
+            orderLines: state.orderLines.map((order) => {
+              if (order.id !== log.orderId) {
+                return order;
+              }
+
+              return {
+                ...order,
+                centsItemsTotal: order.centsItemsTotal + 0,
+              };
+            }),
+          };
+        }
+
+        return {
+          ...state,
+          itemLines,
+          orderLines: [
+            ...state.orderLines,
+            {
+              id: log.orderId,
+              purchaseDate: log.timestamp,
+              description: log.note,
+              centsItemsTotal: log.priceCents,
+              centsTransactionsTotal: 0,
+            },
+          ],
+        };
+      case 'TransactionLog':
+      case 'UpdateByProductPriceLog':
+      case 'SetProductRegionLog':
+      case 'ReleaseProductFundsLog':
+      case 'CancelReleaseProductFundsLog':
+      case 'ScheduleLessonProductLog':
+      case 'CancelScheduleLessonProductLog':
+      case 'VoidProductLog':
+      case 'CancelVoidProductLog':
+        return state;
+      default:
+        // @ts-ignore
+        throw new Error(`Unknown activity log type: ${log.type}`);
+    }
   }
 
   init(services: Services) {
@@ -134,5 +201,58 @@ export class ItemActivityService {
       ItemActivityService.itemActivityReducer,
       INITIAL_ITEM_ACTIVITY_STATE
     );
+  }
+
+  async addNewOrder(payload: NewOrderPayload) {
+    const orderId = uuid();
+
+    const tasks = payload.items.map(async (item) => {
+      const product = await this.services.productService.getProduct(item.id);
+
+      if (!product) {
+        throw new Error('Invalid product id');
+      }
+
+      const base = {
+        accountId: payload.accountId,
+        orderId,
+        userId: payload.userId,
+        authorId: payload.authorId,
+        timestamp: new Date(),
+        note: payload.description,
+      };
+
+      if (product.type === 'lesson') {
+        return prisma.activityLog.create({
+          data: {
+            ...base,
+            type: 'newLessonProductLog',
+            regionId: payload.regionId,
+            productId: item.id as ProductId,
+            productType: product.type,
+            role: product.role,
+            durationMinutes: product.durationMinutes,
+            cents: item.priceCents,
+          },
+        });
+      } else if (product.type === 'course') {
+        return prisma.activityLog.create({
+          data: {
+            ...base,
+            type: 'newCourseProductLog',
+            regionId: payload.regionId,
+            productId: item.id as ProductId,
+            productType: product.type,
+            state: item.state as State,
+            cents: item.priceCents,
+          },
+        });
+      } else {
+        // @ts-ignore
+        throw new Error(`product type not supported ${product.type}`);
+      }
+    });
+
+    await Promise.all(tasks);
   }
 }

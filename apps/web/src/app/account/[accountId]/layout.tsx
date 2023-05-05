@@ -1,60 +1,76 @@
-import { getServices } from 'database';
+import { ItemLine, OrderLine, getServices } from 'database';
 import { Heading } from '../../../components/Heading';
 import { Link } from '../../../components/Link';
 import { SimplePageLayout } from '../../../components/SimplePageLayout';
 import { SimpleTable } from '../../../components/SimpleTable';
 import { getParam, routes } from '../../../services/navigation';
+import { formatCentsToDollars, formatDate } from '../../../services/format';
+
+export const REVALIDATE_SECONDS = 1;
 
 const ORDER_COLUMNS = [
   {
     label: 'Order ID',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
+    getKey: (row: OrderLine) => row.id,
+    getContent: (row: OrderLine) => row.id,
   },
   {
     label: 'Purchase Date',
-    getKey: (row) => row.id,
-    getContent: (row) => row.id,
-  },
-  { label: 'Bundle', getKey: (row) => row.name, getContent: (row) => row.name },
-  {
-    label: 'Order Total',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
-  },
-  {
-    label: 'Transactions Total',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
-  },
-  {
-    label: 'Actions',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
-  },
-];
-const ITEM_COLUMNS = [
-  { label: 'Order ID', getKey: (row) => row.id, getContent: (row) => row.id },
-  {
-    label: 'Purchase Date',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
+    getKey: (row: OrderLine) => row.purchaseDate.toString(),
+    getContent: (row: OrderLine) => formatDate(row.purchaseDate),
   },
   {
     label: 'Description',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
+    getKey: (row: OrderLine) => row.description,
+    getContent: (row: OrderLine) => row.description,
+  },
+  {
+    label: 'Order Total',
+    getKey: (row: OrderLine) => row.centsItemsTotal.toString(),
+    getContent: (row: OrderLine) => formatCentsToDollars(row.centsItemsTotal),
+  },
+  {
+    label: 'Transactions Total',
+    getKey: (row: OrderLine) => row.centsTransactionsTotal.toString(),
+    getContent: (row: OrderLine) =>
+      formatCentsToDollars(row.centsTransactionsTotal),
+  },
+  {
+    label: 'Actions',
+    getKey: (row: OrderLine) => 'actions',
+    getContent: (row: OrderLine) => <></>,
+  },
+];
+const ITEM_COLUMNS = [
+  {
+    label: 'Order ID',
+    getKey: (row: ItemLine) => row.orderId,
+    getContent: (row: ItemLine) => row.orderId,
+  },
+  {
+    label: 'Purchase Date',
+    getKey: (row: ItemLine) => row.purchaseDate.toString(),
+    getContent: (row: ItemLine) => formatDate(row.purchaseDate),
+  },
+  {
+    label: 'Description',
+    getKey: (row: ItemLine) => row.description,
+    getContent: (row: ItemLine) => row.description,
   },
   {
     label: 'Lesson Date',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
+    getKey: (row: ItemLine) => row.lessonDate?.toString(),
+    getContent: (row: ItemLine) => formatDate(row.lessonDate),
   },
-  { label: 'Price', getKey: (row) => row.name, getContent: (row) => row.name },
+  {
+    label: 'Price',
+    getKey: (row: ItemLine) => row.priceCents.toString(),
+    getContent: (row: ItemLine) => formatCentsToDollars(row.priceCents),
+  },
   {
     label: 'Actions',
-    getKey: (row) => row.name,
-    getContent: (row) => row.name,
+    getKey: (row: ItemLine) => 'actions',
+    getContent: (row: ItemLine) => <></>,
   },
 ];
 const IDENTITY_FIELD = (row) => row.id;
@@ -70,13 +86,15 @@ export default async function AccountLayout({
   const { orderLines, itemLines } =
     await getServices().itemActivityService.getOrderAndItemLines(accountId);
 
+  console.log(orderLines);
+
   return (
     <SimplePageLayout>
       <div className="flex justify-between">
         <Heading>Orders</Heading>
         <Link href={routes.accountOrderNew(accountId)}>New Order</Link>
       </div>
-      <SimpleTable
+      <SimpleTable<OrderLine>
         columns={ORDER_COLUMNS}
         data={orderLines}
         getRowId={IDENTITY_FIELD}
