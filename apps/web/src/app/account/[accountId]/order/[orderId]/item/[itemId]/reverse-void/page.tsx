@@ -3,16 +3,20 @@ import {
   PageParamsProps,
   getParam,
 } from '../../../../../../../../services/navigation';
-import { VoidItemForm } from './VoidItemForm';
+import { ReverseVoidItemForm } from './ReverseVoidItemForm';
 
-export default async function VoidPage({ params }: PageParamsProps) {
+export default async function SetPricePage({ params }: PageParamsProps) {
   const accountId = getParam('accountId', params);
   const orderId = getParam('orderId', params);
   const itemId = getParam('itemId', params);
 
   return (
     <ModalWrapper size="sm">
-      <VoidItemForm accountId={accountId} orderId={orderId} itemId={itemId} />
+      <ReverseVoidItemForm
+        accountId={accountId}
+        orderId={orderId}
+        itemId={itemId}
+      />
     </ModalWrapper>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { ReverseVoidOrderItemPayload, VoidOrderItemPayload } from 'database';
 import {
   NewOrderItemsPayload,
   NewOrderTransactionPayload,
@@ -53,6 +54,30 @@ export const api = {
     return client(
       'POST',
       `/account/${accountId}/order/${orderId}/item/${itemId}/set-price/api`,
+      payload
+    );
+  },
+  voidOrderItem: async ({
+    accountId,
+    orderId,
+    itemId,
+    ...payload
+  }: Omit<VoidOrderItemPayload, 'authorId'>) => {
+    return client(
+      'POST',
+      `/account/${accountId}/order/${orderId}/item/${itemId}/void/api`,
+      payload
+    );
+  },
+  reverseVoidOrderItem: async ({
+    accountId,
+    orderId,
+    itemId,
+    ...payload
+  }: Omit<ReverseVoidOrderItemPayload, 'authorId'>) => {
+    return client(
+      'POST',
+      `/account/${accountId}/order/${orderId}/item/${itemId}/reverse-void/api`,
       payload
     );
   },

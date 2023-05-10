@@ -32,6 +32,11 @@ export const routes = {
   ) => `/account/${accountId}/order/${orderId}/item/${itemId}`,
   accountOrderItemVoid: (accountId: string, orderId: string, itemId: string) =>
     `/account/${accountId}/order/${orderId}/item/${itemId}/void`,
+  accountOrderItemReverseVoid: (
+    accountId: string,
+    orderId: string,
+    itemId: string
+  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/reverse-void`,
   accountOrderItemSetPrice: (
     accountId: string,
     orderId: string,

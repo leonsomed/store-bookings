@@ -25,6 +25,7 @@ export interface ItemLine {
   lessonDate?: Date;
   description: string;
   priceCents: number;
+  isVoid: boolean;
 }
 
 export interface ItemActivityState {
@@ -165,6 +166,18 @@ export interface SetOrderItemPricePayload {
   note: string;
   authorId: string;
 }
+
+export interface VoidOrderItemPayload {
+  reason: VoidReason;
+  accountId: string;
+  orderId: string;
+  itemId: string;
+  userId: string;
+  note: string;
+  authorId: string;
+}
+
+export type ReverseVoidOrderItemPayload = Omit<VoidOrderItemPayload, 'reason'>;
 
 export interface OrderTransactionState {
   itemsTotal: number;

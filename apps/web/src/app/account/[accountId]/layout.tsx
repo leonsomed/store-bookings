@@ -7,6 +7,7 @@ import { SimpleTable } from '../../../components/SimpleTable';
 import { getParam, routes } from '../../../services/navigation';
 import { formatCentsToDollars, formatDate } from '../../../services/format';
 import { SecondaryButton } from '../../../components/Button';
+import { ColoredText } from '../../../components/ColoredText';
 
 export const REVALIDATE_SECONDS = 1;
 
@@ -72,48 +73,88 @@ const ITEM_COLUMNS = [
   {
     label: 'Order ID',
     getKey: (row: ItemLine) => row.orderId,
-    getContent: (row: ItemLine) => row.orderId,
+    getContent: (row: ItemLine) => (
+      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+        {row.orderId}
+      </ColoredText>
+    ),
   },
   {
     label: 'Purchase Date',
     getKey: (row: ItemLine) => row.purchaseDate.toString(),
-    getContent: (row: ItemLine) => formatDate(row.purchaseDate),
+    getContent: (row: ItemLine) => (
+      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+        {formatDate(row.purchaseDate)}
+      </ColoredText>
+    ),
   },
   {
     label: 'Description',
     getKey: (row: ItemLine) => row.description,
-    getContent: (row: ItemLine) => row.description,
+    getContent: (row: ItemLine) => (
+      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+        {row.description}
+      </ColoredText>
+    ),
   },
   {
     label: 'Lesson Date',
     getKey: (row: ItemLine) => row.lessonDate?.toString(),
-    getContent: (row: ItemLine) => formatDate(row.lessonDate),
+    getContent: (row: ItemLine) => (
+      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+        {formatDate(row.lessonDate)}
+      </ColoredText>
+    ),
   },
   {
     label: 'Price',
     getKey: (row: ItemLine) => row.priceCents.toString(),
-    getContent: (row: ItemLine) => formatCentsToDollars(row.priceCents),
+    getContent: (row: ItemLine) => (
+      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+        {formatCentsToDollars(row.priceCents)}
+      </ColoredText>
+    ),
   },
   {
     label: 'Actions',
     getKey: (row: ItemLine) => 'actions',
     getContent: (row: ItemLine) => (
       <div className="flex space-x-2">
-        <Link
-          href={routes.accountOrderItemVoid(row.accountId, row.orderId, row.id)}
-          variant="error"
-        >
-          Void
-        </Link>
-        <Link
-          href={routes.accountOrderItemSetPrice(
-            row.accountId,
-            row.orderId,
-            row.id
-          )}
-        >
-          Set Price
-        </Link>
+        {row.isVoid ? (
+          <>
+            <Link
+              href={routes.accountOrderItemReverseVoid(
+                row.accountId,
+                row.orderId,
+                row.id
+              )}
+            >
+              Reverse Void
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              href={routes.accountOrderItemVoid(
+                row.accountId,
+                row.orderId,
+                row.id
+              )}
+              variant="error"
+            >
+              Void
+            </Link>
+            <Link
+              href={routes.accountOrderItemSetPrice(
+                row.accountId,
+                row.orderId,
+                row.id
+              )}
+            >
+              Set Price
+            </Link>
+          </>
+        )}
       </div>
     ),
   },

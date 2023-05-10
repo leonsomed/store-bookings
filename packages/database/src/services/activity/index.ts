@@ -15,7 +15,9 @@ import {
   NewOrderItemsPayload,
   NewOrderTransactionPayload,
   OrderTransactionState,
+  ReverseVoidOrderItemPayload,
   SetOrderItemPricePayload,
+  VoidOrderItemPayload,
 } from './types';
 
 const INITIAL_ITEM_ACTIVITY_STATE: ItemActivityState = {
@@ -175,6 +177,7 @@ export class ItemActivityService {
           description: log.note,
           priceCents: log.priceCents,
           purchaseDate: log.timestamp,
+          isVoid: false,
         });
 
         if (order) {
@@ -247,13 +250,26 @@ export class ItemActivityService {
             };
           }),
         };
+      case 'CancelVoidItemLog':
+      case 'VoidItemLog':
+        return {
+          ...state,
+          itemLines: state.itemLines.map((item) => {
+            if (item.id !== log.itemId) {
+              return item;
+            }
+
+            return {
+              ...item,
+              isVoid: log.type === 'VoidItemLog',
+            };
+          }),
+        };
       case 'SetItemRegionLog':
       case 'ReleaseItemFundsLog':
       case 'CancelReleaseItemFundsLog':
       case 'ScheduleLessonItemLog':
       case 'CancelScheduleLessonItemLog':
-      case 'VoidItemLog':
-      case 'CancelVoidItemLog':
         return state;
       default:
         // @ts-ignore
@@ -387,6 +403,45 @@ export class ItemActivityService {
         type: 'updateByItemPriceLog',
         itemId: payload.itemId,
         centsDiff: payload.newPriceCents - payload.currentPriceCents,
+      },
+    });
+  }
+
+  async voidOrderItem(payload: VoidOrderItemPayload) {
+    const base = {
+      accountId: payload.accountId,
+      orderId: payload.orderId,
+      userId: payload.userId,
+      authorId: payload.authorId,
+      note: payload.note,
+      timestamp: new Date(),
+    };
+
+    return prisma.activityLog.create({
+      data: {
+        ...base,
+        type: 'voidItemLog',
+        itemId: payload.itemId,
+        reason: payload.reason,
+      },
+    });
+  }
+
+  async reverseVoidOrderItem(payload: ReverseVoidOrderItemPayload) {
+    const base = {
+      accountId: payload.accountId,
+      orderId: payload.orderId,
+      userId: payload.userId,
+      authorId: payload.authorId,
+      note: payload.note,
+      timestamp: new Date(),
+    };
+
+    return prisma.activityLog.create({
+      data: {
+        ...base,
+        type: 'cancelVoidItemLog',
+        itemId: payload.itemId,
       },
     });
   }
