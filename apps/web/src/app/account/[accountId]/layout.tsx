@@ -1,10 +1,11 @@
 import { ItemLine, OrderLine, getServices } from 'database';
 import { Heading } from '../../../components/Heading';
-import { Link } from '../../../components/Link';
+import { IconLink, Link } from '../../../components/Link';
 import { SimplePageLayout } from '../../../components/SimplePageLayout';
 import { SimpleTable } from '../../../components/SimpleTable';
 import { getParam, routes } from '../../../services/navigation';
 import { formatCentsToDollars, formatDate } from '../../../services/format';
+import { SecondaryButton } from '../../../components/Button';
 
 export const REVALIDATE_SECONDS = 1;
 
@@ -38,7 +39,13 @@ const ORDER_COLUMNS = [
   {
     label: 'Actions',
     getKey: (row: OrderLine) => 'actions',
-    getContent: (row: OrderLine) => <></>,
+    getContent: (row: OrderLine) => (
+      <>
+        <Link href={routes.accountOrderNewProducts(row.accountId, row.id)}>
+          Add product
+        </Link>
+      </>
+    ),
   },
 ];
 const ITEM_COLUMNS = [

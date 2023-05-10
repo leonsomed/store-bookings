@@ -12,7 +12,7 @@ import {
   ActivityLog,
   BaseActivityLog,
   ItemActivityState,
-  NewOrderPayload,
+  NewOrderProductsPayload,
 } from './types';
 
 const INITIAL_ITEM_ACTIVITY_STATE: ItemActivityState = {
@@ -134,6 +134,7 @@ export class ItemActivityService {
         );
         const itemLines = state.itemLines.concat({
           id: log.id,
+          accountId: log.accountId,
           orderId: log.orderId,
           productType: log.productType,
           description: log.note,
@@ -152,7 +153,7 @@ export class ItemActivityService {
 
               return {
                 ...order,
-                centsItemsTotal: order.centsItemsTotal + 0,
+                centsItemsTotal: order.centsItemsTotal + log.priceCents,
               };
             }),
           };
@@ -165,6 +166,7 @@ export class ItemActivityService {
             ...state.orderLines,
             {
               id: log.orderId,
+              accountId: log.accountId,
               purchaseDate: log.timestamp,
               description: log.note,
               centsItemsTotal: log.priceCents,
@@ -203,9 +205,7 @@ export class ItemActivityService {
     );
   }
 
-  async addNewOrder(payload: NewOrderPayload) {
-    const orderId = uuid();
-
+  async newOrderProducts(payload: NewOrderProductsPayload) {
     const tasks = payload.items.map(async (item) => {
       const product = await this.services.productService.getProduct(item.id);
 
@@ -215,7 +215,7 @@ export class ItemActivityService {
 
       const base = {
         accountId: payload.accountId,
-        orderId,
+        orderId: payload.orderId ?? uuid(),
         userId: payload.userId,
         authorId: payload.authorId,
         timestamp: new Date(),

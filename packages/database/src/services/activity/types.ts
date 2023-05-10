@@ -9,6 +9,7 @@ import {
 
 export interface OrderLine {
   id: string;
+  accountId: string;
   purchaseDate: Date;
   description: string;
   centsItemsTotal: number;
@@ -17,6 +18,7 @@ export interface OrderLine {
 
 export interface ItemLine {
   id: string;
+  accountId: string;
   orderId: string;
   productType: ProductType;
   purchaseDate: Date;
@@ -125,8 +127,9 @@ export type ActivityLog =
   | NewCourseProductLog
   | SetProductRegionLog;
 
-export interface NewOrderPayload {
+export interface NewOrderProductsPayload {
   userId: string;
+  orderId?: string;
   authorId: string;
   accountId: string;
   regionId: string;

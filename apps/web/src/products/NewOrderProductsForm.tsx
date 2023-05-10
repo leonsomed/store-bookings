@@ -2,18 +2,20 @@
 
 import { Formik, FormikHelpers } from 'formik';
 import { nanoid } from 'nanoid';
+import { uuid } from 'uuidv4';
 import * as yup from 'yup';
 import { Bundle, Product } from 'database';
-import { Select } from '../../../../components/Select';
 import { ChangeEventHandler, useMemo } from 'react';
-import { FormContainer } from '../../../../components/FormContainer';
-import { useRouter } from 'next/navigation';
-import { dollarsToCents, formatDollars } from '../../../../services/format';
-import { Checkbox } from '../../../../components/Checkbox';
+import { Select } from '../components/Select';
+import { FormContainer } from '../components/FormContainer';
+import { dollarsToCents, formatDollars } from '../services/format';
+import { Checkbox } from '../components/Checkbox';
 import { ItemEntryCard } from './ItemEntryCard';
-import { api } from '../../../../services/api';
-import { Alert } from '../../../../components/Alert';
-import { routes } from '../../../../services/navigation';
+import { Alert } from '../components/Alert';
+import { NewOrderProductsPayload } from 'database';
+import { useRouter } from 'next/navigation';
+import { api } from '../services/api';
+import { routes } from '../services/navigation';
 
 export type Item = Product & {
   priceDollars: string;
@@ -29,17 +31,18 @@ export interface ItemEntry {
   items: Item[];
 }
 
-interface NewOrderFormProps {
+interface NewOrderProductsFormProps {
   products: Product[];
   bundles: Bundle[];
   accountId: string;
+  orderId?: string;
 }
 
-interface NewOrderFormState {
+interface NewOrderProductsFormState {
   items: ItemEntry[];
 }
 
-const DEFAULT_FORM_STATE: NewOrderFormState = { items: [] };
+const DEFAULT_FORM_STATE: NewOrderProductsFormState = { items: [] };
 
 const getTotalDollars = (items: ItemEntry[]) =>
   items.reduce(
@@ -51,7 +54,7 @@ const getTotalDollars = (items: ItemEntry[]) =>
     0
   );
 
-const newOrderFormSchema = yup.object().shape({
+const newOrderProductsFormSchema = yup.object().shape({
   items: yup
     .array(
       yup.object().shape({
@@ -73,16 +76,16 @@ const newOrderFormSchema = yup.object().shape({
     .min(1, 'Please add at least one item'),
 });
 
-export function NewOrderForm({
+export function NewOrderProductsForm({
   products,
   bundles,
   accountId,
-}: NewOrderFormProps) {
+  orderId,
+}: NewOrderProductsFormProps) {
   const router = useRouter();
-
   const handleSubmit = async (
-    values: NewOrderFormState,
-    formik: FormikHelpers<NewOrderFormState>
+    values: NewOrderProductsFormState,
+    formik: FormikHelpers<NewOrderProductsFormState>
   ) => {
     formik.setStatus(undefined);
     formik.setSubmitting(true);
@@ -98,23 +101,21 @@ export function NewOrderForm({
           priceCents: dollarsToCents(subItem.priceDollars),
         }))
       );
-      await api.newOrder({
+      const payload = {
         items,
         description,
         accountId,
+        orderId: orderId ?? uuid(),
         regionId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO form must ask for the region
         userId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO from must ask for the user, since accounts have multiple
-      });
-      router.push(routes.accountDetails(accountId));
+      };
+      await api.newOrderProducts(payload);
+      router?.push(routes.accountDetails(accountId));
     } catch (e) {
       console.error(e);
       formik.setStatus({ message: 'There was a problem, please try again.' });
       formik.setSubmitting(false);
     }
-  };
-
-  const handleDismiss = () => {
-    router.back();
   };
 
   const options = useMemo(() => {
@@ -135,7 +136,7 @@ export function NewOrderForm({
       isInitialValid={false}
       initialValues={DEFAULT_FORM_STATE}
       onSubmit={handleSubmit}
-      validationSchema={newOrderFormSchema}
+      validationSchema={newOrderProductsFormSchema}
     >
       {(formikProps) => {
         const handleRemoveItem = (entryIndex: number) => {
@@ -193,9 +194,9 @@ export function NewOrderForm({
 
         return (
           <FormContainer
-            title="New Order"
+            title={orderId ? 'New Order' : 'Add Products'}
             disabled={!formikProps.isValid || formikProps.isSubmitting}
-            onDismiss={handleDismiss}
+            onDismiss={router.back}
             onSubmit={formikProps.submitForm}
           >
             <div className="text-xl">

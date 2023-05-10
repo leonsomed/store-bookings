@@ -21,26 +21,35 @@ export const routes = {
   accountOrderNew: (accountId: string) => `/account/${accountId}/order`,
   accountOrderDetails: (accountId: string, orderId: string) =>
     `/account/${accountId}/order/${orderId}`,
+  accountOrderNewProducts: (accountId: string, orderId: string) =>
+    `/account/${accountId}/order/${orderId}/product`,
   accountOrderTransactions: (accountId: string, orderId: string) =>
     `/account/${accountId}/order/${orderId}/transaction`,
-  accountProductDetails: (
+  accountOrderProductDetails: (
     accountId: string,
     orderId: string,
     productId: string
   ) => `/account/${accountId}/order/${orderId}/product/${productId}`,
-  accountProductVoid: (accountId: string, orderId: string, productId: string) =>
-    `/account/${accountId}/order/${orderId}/product/${productId}/void`,
-  accountProductSetPrice: (
+  accountOrderProductVoid: (
+    accountId: string,
+    orderId: string,
+    productId: string
+  ) => `/account/${accountId}/order/${orderId}/product/${productId}/void`,
+  accountOrderProductSetPrice: (
     accountId: string,
     orderId: string,
     productId: string
   ) => `/account/${accountId}/order/${orderId}/product/${productId}/set-price`,
-  accountCancelLesson: (
+  accountOrderCancelLesson: (
     accountId: string,
     orderId: string,
     productId: string
   ) =>
     `/account/${accountId}/order/${orderId}/product/${productId}/cancel-lesson`,
-  accountBookLesson: (accountId: string, orderId: string, productId: string) =>
+  accountOrderBookLesson: (
+    accountId: string,
+    orderId: string,
+    productId: string
+  ) =>
     `/account/${accountId}/order/${orderId}/product/${productId}/book-lesson`,
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import _ from 'lodash';
-import { SecondaryButton } from '../../../../components/Button';
-import { Input } from '../../../../components/Input';
-import { ItemEntry } from './NewOrderForm';
-import { Select } from '../../../../components/Select';
+import { SecondaryButton } from '../components/Button';
+import { Input } from '../components/Input';
+import { ItemEntry } from './NewOrderProductsForm';
+import { Select } from '../components/Select';
 
 interface ItemEntryCardProps extends ItemEntry {
   entryIndex: number;

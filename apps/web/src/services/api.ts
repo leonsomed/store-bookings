@@ -1,6 +1,6 @@
 'use client';
 
-import type { NewOrderPayload } from '../app/account/[accountId]/order/api/route';
+import { NewOrderProductsPayload } from 'database';
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -23,7 +23,10 @@ const client = async (method: 'POST' | 'GET', url: string, payload: any) => {
 };
 
 export const api = {
-  newOrder: async ({ accountId, ...payload }: NewOrderPayload) => {
+  newOrderProducts: async ({
+    accountId,
+    ...payload
+  }: Omit<NewOrderProductsPayload, 'authorId'>) => {
     return client('POST', `/account/${accountId}/order/api`, payload);
   },
 };
