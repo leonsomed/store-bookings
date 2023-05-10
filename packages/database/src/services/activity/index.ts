@@ -227,13 +227,23 @@ export class ItemActivityService {
         return {
           ...state,
           itemLines: state.itemLines.map((item) => {
-            if (item.id !== log.id) {
+            if (item.id !== log.itemId) {
               return item;
             }
 
             return {
               ...item,
               priceCents: item.priceCents + log.centsDiff,
+            };
+          }),
+          orderLines: state.orderLines.map((order) => {
+            if (order.id !== log.orderId) {
+              return order;
+            }
+
+            return {
+              ...order,
+              centsItemsTotal: order.centsItemsTotal + log.centsDiff,
             };
           }),
         };
@@ -275,6 +285,7 @@ export class ItemActivityService {
       }
 
       const base = {
+        id: uuid(),
         accountId: payload.accountId,
         orderId: payload.orderId ?? uuid(),
         userId: payload.userId,
@@ -289,7 +300,7 @@ export class ItemActivityService {
             ...base,
             type: 'newLessonItemLog',
             regionId: payload.regionId,
-            itemId: item.id,
+            itemId: base.id,
             productId: product.id,
             productType: product.type,
             role: product.role,
@@ -303,7 +314,7 @@ export class ItemActivityService {
             ...base,
             type: 'newCourseItemLog',
             regionId: payload.regionId,
-            itemId: item.id,
+            itemId: base.id,
             productId: product.id,
             productType: product.type,
             state: item.state as State,
