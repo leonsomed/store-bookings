@@ -9,3 +9,11 @@ export const Heading = ({ children }: HeadingProps) => {
     </h1>
   );
 };
+
+export const Subheading = ({ children }: HeadingProps) => {
+  return (
+    <h1 className="m-0 text-xl font-medium leading-tight text-black">
+      {children}
+    </h1>
+  );
+};

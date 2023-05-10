@@ -1,6 +1,6 @@
 'use client';
 
-import { NewOrderProductsPayload } from 'database';
+import { NewOrderProductsPayload, NewOrderTransactionPayload } from 'database';
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -28,5 +28,16 @@ export const api = {
     ...payload
   }: Omit<NewOrderProductsPayload, 'authorId'>) => {
     return client('POST', `/account/${accountId}/order/api`, payload);
+  },
+  newOrderTransaction: async ({
+    accountId,
+    orderId,
+    ...payload
+  }: Omit<NewOrderTransactionPayload, 'authorId'>) => {
+    return client(
+      'POST',
+      `/account/${accountId}/order/${orderId}/transaction/api`,
+      payload
+    );
   },
 };

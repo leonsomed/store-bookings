@@ -24,5 +24,5 @@ export const formatDate = (
 ) => {
   if (!date) return fallback;
 
-  return dayjs(date).format('MM/DD/YYYY hh:mm:ss A');
+  return dayjs(date).format('MM/DD/YYYY hh:mm A');
 };

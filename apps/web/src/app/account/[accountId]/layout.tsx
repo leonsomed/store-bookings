@@ -40,11 +40,14 @@ const ORDER_COLUMNS = [
     label: 'Actions',
     getKey: (row: OrderLine) => 'actions',
     getContent: (row: OrderLine) => (
-      <>
+      <div className="flex space-x-2">
         <Link href={routes.accountOrderNewProducts(row.accountId, row.id)}>
           Add product
         </Link>
-      </>
+        <Link href={routes.accountOrderTransactions(row.accountId, row.id)}>
+          Transactions
+        </Link>
+      </div>
     ),
   },
 ];

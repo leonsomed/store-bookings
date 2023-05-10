@@ -5,7 +5,7 @@ interface SelectProps {
   options: { value: string; label: string }[];
   label?: string;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   value?: string;
   error?: string;
   disabled?: boolean;
@@ -52,7 +52,7 @@ export function Select({
           }
         )}
       >
-        <option value={placeholder}>{placeholder}</option>
+        {placeholder && <option value={placeholder}>{placeholder}</option>}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

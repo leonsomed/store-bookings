@@ -13,11 +13,19 @@ import {
   BaseActivityLog,
   ItemActivityState,
   NewOrderProductsPayload,
+  NewOrderTransactionPayload,
+  OrderTransactionState,
 } from './types';
 
 const INITIAL_ITEM_ACTIVITY_STATE: ItemActivityState = {
   orderLines: [],
   itemLines: [],
+};
+
+const INITIAL_ORDER_TRANSACTION_STATE: OrderTransactionState = {
+  itemsTotal: 0,
+  transactionsTotal: 0,
+  transactions: [],
 };
 
 export class ItemActivityService {
@@ -125,7 +133,31 @@ export class ItemActivityService {
     }
   }
 
-  static itemActivityReducer(state: ItemActivityState, log: ActivityLog) {
+  static orderTransactionReducer(
+    state: OrderTransactionState,
+    log: ActivityLog
+  ): OrderTransactionState {
+    switch (log.type) {
+      case 'NewLessonProductLog':
+      case 'NewCourseProductLog':
+        return { ...state, itemsTotal: state.itemsTotal + log.priceCents };
+      case 'UpdateByProductPriceLog':
+        return { ...state, itemsTotal: state.itemsTotal + log.centsDiff };
+      case 'TransactionLog':
+        return {
+          ...state,
+          transactionsTotal: state.transactionsTotal + log.cents,
+          transactions: [...state.transactions, log],
+        };
+      default:
+        return state;
+    }
+  }
+
+  static itemActivityReducer(
+    state: ItemActivityState,
+    log: ActivityLog
+  ): ItemActivityState {
     switch (log.type) {
       case 'NewLessonProductLog':
       case 'NewCourseProductLog':
@@ -174,8 +206,8 @@ export class ItemActivityService {
             },
           ],
         };
-      case 'TransactionLog':
       case 'UpdateByProductPriceLog':
+      case 'TransactionLog':
       case 'SetProductRegionLog':
       case 'ReleaseProductFundsLog':
       case 'CancelReleaseProductFundsLog':
@@ -254,5 +286,38 @@ export class ItemActivityService {
     });
 
     await Promise.all(tasks);
+  }
+
+  async newOrderTransaction(payload: NewOrderTransactionPayload) {
+    const base = {
+      accountId: payload.accountId,
+      orderId: payload.orderId,
+      userId: payload.userId,
+      authorId: payload.authorId,
+      note: payload.note,
+      timestamp: new Date(),
+    };
+
+    return prisma.activityLog.create({
+      data: {
+        ...base,
+        type: 'transactionLog',
+        transactionCategory: payload.category,
+        cents: payload.cents,
+        optionalStripeChargeId: payload.stripeChargeId,
+        optionalStripeCustomerId: payload.stripeCustomerId,
+      },
+    });
+  }
+
+  async getOrderTransactionState(accountId: string, orderId: string) {
+    const logs = (
+      await prisma.activityLog.findMany({ where: { accountId, orderId } })
+    ).map(ItemActivityService.formatActivityLog);
+
+    return logs.reduce(
+      ItemActivityService.orderTransactionReducer,
+      INITIAL_ORDER_TRANSACTION_STATE
+    );
   }
 }

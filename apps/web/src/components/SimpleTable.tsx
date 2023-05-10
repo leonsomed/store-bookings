@@ -50,6 +50,9 @@ export function SimpleTable<T>({
                 ))}
               </tbody>
             </table>
+            {data.length === 0 && (
+              <div className="flex justify-center py-2 italic">No entries</div>
+            )}
           </div>
         </div>
       </div>

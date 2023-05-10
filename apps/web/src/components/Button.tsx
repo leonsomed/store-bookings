@@ -13,11 +13,10 @@ export const PrimaryButton = ({ onClick, children, disabled }: ButtonProps) => {
       type="button"
       disabled={disabled}
       className={cx(
-        'inline-block cursor-pointer rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal',
+        'inline-block cursor-pointer text-white rounded px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal',
         {
+          'bg-primary': !disabled,
           'bg-gray-200': disabled,
-          'text-primary-700': disabled,
-          'text-white': !disabled,
         }
       )}
     >
@@ -37,9 +36,12 @@ export const SecondaryButton = ({
       type="button"
       disabled={disabled}
       className={cx(
-        'inline-block rounded cursor-pointer bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-primary-700',
+        'inline-block rounded cursor-pointer px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal ',
         {
+          'bg-primary-100': !disabled,
+          'text-primary-700': !disabled,
           'bg-gray-200': disabled,
+          'text-white': disabled,
         }
       )}
     >

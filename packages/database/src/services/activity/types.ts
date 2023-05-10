@@ -140,3 +140,21 @@ export interface NewOrderProductsPayload {
     state?: string;
   }>;
 }
+
+export interface NewOrderTransactionPayload {
+  cents: number;
+  note: string;
+  category: TransactionCategory;
+  stripeChargeId?: string | null;
+  stripeCustomerId?: string | null;
+  accountId: string;
+  orderId: string;
+  userId: string;
+  authorId: string;
+}
+
+export interface OrderTransactionState {
+  itemsTotal: number;
+  transactionsTotal: number;
+  transactions: TransactionLog[];
+}
