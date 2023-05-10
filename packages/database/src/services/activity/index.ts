@@ -12,9 +12,10 @@ import {
   ActivityLog,
   BaseActivityLog,
   ItemActivityState,
-  NewOrderProductsPayload,
+  NewOrderItemsPayload,
   NewOrderTransactionPayload,
   OrderTransactionState,
+  SetOrderItemPricePayload,
 } from './types';
 
 const INITIAL_ITEM_ACTIVITY_STATE: ItemActivityState = {
@@ -52,80 +53,82 @@ export class ItemActivityService {
           stripeChargeId: log.optionalStripeChargeId,
           stripeCustomerId: log.optionalStripeCustomerId,
         };
-      case ActivityLogType.updateByProductPriceLog:
+      case ActivityLogType.updateByItemPriceLog:
         return {
           ...baseLog,
-          type: 'UpdateByProductPriceLog',
-          productId: log.productId!,
+          type: 'UpdateByItemPriceLog',
+          itemId: log.itemId!,
           centsDiff: log.centsDiff!,
         };
-      case ActivityLogType.scheduleLessonProductLog:
+      case ActivityLogType.scheduleLessonItemLog:
         return {
           ...baseLog,
-          type: 'ScheduleLessonProductLog',
-          productId: log.productId!,
+          type: 'ScheduleLessonItemLog',
+          itemId: log.itemId!,
           instructorId: log.instructorId!,
           studentId: log.studentId!,
           slotId: log.slotId!,
         };
-      case ActivityLogType.cancelScheduleLessonProductLog:
+      case ActivityLogType.cancelScheduleLessonItemLog:
         return {
           ...baseLog,
-          type: 'CancelScheduleLessonProductLog',
-          productId: log.productId!,
+          type: 'CancelScheduleLessonItemLog',
+          itemId: log.itemId!,
           initiator: log.initiator!,
         };
-      case ActivityLogType.releaseProductFundsLog:
+      case ActivityLogType.releaseItemFundsLog:
         return {
           ...baseLog,
-          type: 'ReleaseProductFundsLog',
-          productId: log.productId!,
+          type: 'ReleaseItemFundsLog',
+          itemId: log.itemId!,
         };
-      case ActivityLogType.cancelReleaseProductFundsLog:
+      case ActivityLogType.cancelReleaseItemFundsLog:
         return {
           ...baseLog,
-          type: 'CancelReleaseProductFundsLog',
-          productId: log.productId!,
+          type: 'CancelReleaseItemFundsLog',
+          itemId: log.itemId!,
         };
-      case ActivityLogType.voidProductLog:
+      case ActivityLogType.voidItemLog:
         return {
           ...baseLog,
-          type: 'VoidProductLog',
-          productId: log.productId!,
+          type: 'VoidItemLog',
+          itemId: log.itemId!,
           reason: log.reason!,
         };
-      case ActivityLogType.cancelVoidProductLog:
+      case ActivityLogType.cancelVoidItemLog:
         return {
           ...baseLog,
-          type: 'CancelVoidProductLog',
-          productId: log.productId!,
+          type: 'CancelVoidItemLog',
+          itemId: log.itemId!,
         };
-      case ActivityLogType.newLessonProductLog:
+      case ActivityLogType.newLessonItemLog:
         return {
           ...baseLog,
-          type: 'NewLessonProductLog',
+          type: 'NewLessonItemLog',
           regionId: log.regionId!,
           productId: log.productId!,
+          itemId: log.itemId!,
           productType: 'lesson',
           role: log.role!,
           durationMinutes: log.durationMinutes!,
           priceCents: log.cents!,
         };
-      case ActivityLogType.newCourseProductLog:
+      case ActivityLogType.newCourseItemLog:
         return {
           ...baseLog,
-          type: 'NewCourseProductLog',
+          type: 'NewCourseItemLog',
           regionId: log.regionId!,
           productId: log.productId!,
+          itemId: log.itemId!,
           productType: 'course',
           state: log.state!,
           priceCents: log.cents!,
         };
-      case ActivityLogType.setProductRegionLog:
+      case ActivityLogType.setItemRegionLog:
         return {
           ...baseLog,
-          type: 'SetProductRegionLog',
-          productId: log.productId!,
+          type: 'SetItemRegionLog',
+          itemId: log.itemId!,
           regionId: log.regionId!,
         };
       default:
@@ -138,10 +141,10 @@ export class ItemActivityService {
     log: ActivityLog
   ): OrderTransactionState {
     switch (log.type) {
-      case 'NewLessonProductLog':
-      case 'NewCourseProductLog':
+      case 'NewLessonItemLog':
+      case 'NewCourseItemLog':
         return { ...state, itemsTotal: state.itemsTotal + log.priceCents };
-      case 'UpdateByProductPriceLog':
+      case 'UpdateByItemPriceLog':
         return { ...state, itemsTotal: state.itemsTotal + log.centsDiff };
       case 'TransactionLog':
         return {
@@ -159,8 +162,8 @@ export class ItemActivityService {
     log: ActivityLog
   ): ItemActivityState {
     switch (log.type) {
-      case 'NewLessonProductLog':
-      case 'NewCourseProductLog':
+      case 'NewLessonItemLog':
+      case 'NewCourseItemLog':
         const order = state.orderLines.find(
           (order) => order.id === log.orderId
         );
@@ -220,7 +223,7 @@ export class ItemActivityService {
             };
           }),
         };
-      case 'UpdateByProductPriceLog':
+      case 'UpdateByItemPriceLog':
         return {
           ...state,
           itemLines: state.itemLines.map((item) => {
@@ -234,13 +237,13 @@ export class ItemActivityService {
             };
           }),
         };
-      case 'SetProductRegionLog':
-      case 'ReleaseProductFundsLog':
-      case 'CancelReleaseProductFundsLog':
-      case 'ScheduleLessonProductLog':
-      case 'CancelScheduleLessonProductLog':
-      case 'VoidProductLog':
-      case 'CancelVoidProductLog':
+      case 'SetItemRegionLog':
+      case 'ReleaseItemFundsLog':
+      case 'CancelReleaseItemFundsLog':
+      case 'ScheduleLessonItemLog':
+      case 'CancelScheduleLessonItemLog':
+      case 'VoidItemLog':
+      case 'CancelVoidItemLog':
         return state;
       default:
         // @ts-ignore
@@ -263,7 +266,7 @@ export class ItemActivityService {
     );
   }
 
-  async newOrderProducts(payload: NewOrderProductsPayload) {
+  async newOrderItems(payload: NewOrderItemsPayload) {
     const tasks = payload.items.map(async (item) => {
       const product = await this.services.productService.getProduct(item.id);
 
@@ -284,9 +287,10 @@ export class ItemActivityService {
         return prisma.activityLog.create({
           data: {
             ...base,
-            type: 'newLessonProductLog',
+            type: 'newLessonItemLog',
             regionId: payload.regionId,
-            productId: item.id as ProductId,
+            itemId: item.id,
+            productId: product.id,
             productType: product.type,
             role: product.role,
             durationMinutes: product.durationMinutes,
@@ -297,9 +301,10 @@ export class ItemActivityService {
         return prisma.activityLog.create({
           data: {
             ...base,
-            type: 'newCourseProductLog',
+            type: 'newCourseItemLog',
             regionId: payload.regionId,
-            productId: item.id as ProductId,
+            itemId: item.id,
+            productId: product.id,
             productType: product.type,
             state: item.state as State,
             cents: item.priceCents,
@@ -345,5 +350,33 @@ export class ItemActivityService {
       ItemActivityService.orderTransactionReducer,
       INITIAL_ORDER_TRANSACTION_STATE
     );
+  }
+
+  async getOrderItem(accountId: string, orderId: string, itemId: string) {
+    const state = await this.getOrderAndItemLines(accountId);
+
+    return state.itemLines.find(
+      (item) => item.id === itemId && item.orderId === orderId
+    );
+  }
+
+  async setOrderItemPrice(payload: SetOrderItemPricePayload) {
+    const base = {
+      accountId: payload.accountId,
+      orderId: payload.orderId,
+      userId: payload.userId,
+      authorId: payload.authorId,
+      note: payload.note,
+      timestamp: new Date(),
+    };
+
+    return prisma.activityLog.create({
+      data: {
+        ...base,
+        type: 'updateByItemPriceLog',
+        itemId: payload.itemId,
+        centsDiff: payload.newPriceCents - payload.currentPriceCents,
+      },
+    });
   }
 }

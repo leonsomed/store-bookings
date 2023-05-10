@@ -12,7 +12,7 @@ import {
 } from '../../../../../..//services/format';
 import { Checkbox } from '../../../../../..//components/Checkbox';
 import { Alert } from '../../../../../..//components/Alert';
-import { NewOrderProductsPayload, NewOrderTransactionPayload } from 'database';
+import { NewOrderItemsPayload, NewOrderTransactionPayload } from 'database';
 import { useRouter } from 'next/navigation';
 import { api } from '../../../../../..//services/api';
 import { routes } from '../../../../../..//services/navigation';

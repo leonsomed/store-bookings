@@ -6,7 +6,7 @@ import {
   getParam,
   routes,
 } from '../../../../../../services/navigation';
-import { NewOrderProductsForm } from '../../../../../../products/NewOrderProductsForm';
+import { NewOrderItemsForm } from '../../../../../../items/NewOrderItemsForm';
 import { LabelPair } from '../../../../../../components/LabelPair';
 import { Heading, Subheading } from '../../../../../../components/Heading';
 import {

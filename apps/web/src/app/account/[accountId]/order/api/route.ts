@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma, getServices, ProductId, BundleId } from 'database';
 import * as yup from 'yup';
 import { routeMiddleware } from '../../../../../services/endpoint';
-import { NewOrderProductsPayload } from 'database';
+import { NewOrderItemsPayload } from 'database';
 
 const lazyLoaderFactory = () => {
   let cache: any;
@@ -67,7 +67,7 @@ export const POST = routeMiddleware(async (req: Request, { params }) => {
     ...body,
     accountId,
   });
-  const payload: NewOrderProductsPayload = {
+  const payload: NewOrderItemsPayload = {
     authorId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO the current user
     orderId: input.orderId,
     userId: input.userId,
@@ -80,7 +80,7 @@ export const POST = routeMiddleware(async (req: Request, { params }) => {
       state: item.state,
     })),
   };
-  await itemActivityService.newOrderProducts(payload);
+  await itemActivityService.newOrderItems(payload);
 
   return NextResponse.json({ success: 1 });
 });

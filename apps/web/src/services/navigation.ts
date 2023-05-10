@@ -1,4 +1,4 @@
-export type ParamType = 'accountId' | 'orderId';
+export type ParamType = 'accountId' | 'orderId' | 'itemId';
 
 export function getParam(
   key: ParamType,
@@ -21,35 +21,30 @@ export const routes = {
   accountOrderNew: (accountId: string) => `/account/${accountId}/order`,
   accountOrderDetails: (accountId: string, orderId: string) =>
     `/account/${accountId}/order/${orderId}`,
-  accountOrderNewProducts: (accountId: string, orderId: string) =>
-    `/account/${accountId}/order/${orderId}/product`,
+  accountOrderNewItems: (accountId: string, orderId: string) =>
+    `/account/${accountId}/order/${orderId}/item`,
   accountOrderTransactions: (accountId: string, orderId: string) =>
     `/account/${accountId}/order/${orderId}/transaction`,
-  accountOrderProductDetails: (
+  accountOrderItemDetails: (
     accountId: string,
     orderId: string,
-    productId: string
-  ) => `/account/${accountId}/order/${orderId}/product/${productId}`,
-  accountOrderProductVoid: (
+    itemId: string
+  ) => `/account/${accountId}/order/${orderId}/item/${itemId}`,
+  accountOrderItemVoid: (accountId: string, orderId: string, itemId: string) =>
+    `/account/${accountId}/order/${orderId}/item/${itemId}/void`,
+  accountOrderItemSetPrice: (
     accountId: string,
     orderId: string,
-    productId: string
-  ) => `/account/${accountId}/order/${orderId}/product/${productId}/void`,
-  accountOrderProductSetPrice: (
-    accountId: string,
-    orderId: string,
-    productId: string
-  ) => `/account/${accountId}/order/${orderId}/product/${productId}/set-price`,
+    itemId: string
+  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/set-price`,
   accountOrderCancelLesson: (
     accountId: string,
     orderId: string,
-    productId: string
-  ) =>
-    `/account/${accountId}/order/${orderId}/product/${productId}/cancel-lesson`,
+    itemId: string
+  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/cancel-lesson`,
   accountOrderBookLesson: (
     accountId: string,
     orderId: string,
-    productId: string
-  ) =>
-    `/account/${accountId}/order/${orderId}/product/${productId}/book-lesson`,
+    itemId: string
+  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/book-lesson`,
 };

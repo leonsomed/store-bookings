@@ -73,16 +73,16 @@ enum Initiator {
 
 enum ActivityLogType {
   transactionLog
-  updateByProductPriceLog
-  scheduleLessonProductLog
-  cancelScheduleLessonProductLog
-  releaseProductFundsLog
-  cancelReleaseProductFundsLog
-  voidProductLog
-  cancelVoidProductLog
-  setProductRegionLog
-  newLessonProductLog
-  newCourseProductLog
+  updateByItemPriceLog
+  scheduleLessonItemLog
+  cancelScheduleLessonItemLog
+  releaseItemFundsLog
+  cancelReleaseItemFundsLog
+  voidItemLog
+  cancelVoidItemLog
+  setItemRegionLog
+  newLessonItemLog
+  newCourseItemLog
 }
 
 model User {
@@ -243,63 +243,60 @@ model ActivityLog {
   optionalStripeChargeId String?
   optionalStripeCustomerId String?
   // ==========================================
-  // +++++++  UpdateByProductPriceLog
+  // +++++++  UpdateByItemPriceLog
   // ==========================================
-  productId ProductId?
+  itemId String?
   centsDiff Int?
   // ==========================================
-  // +++++++  UpdateByProductPriceLog
+  // +++++++  ScheduleLessonItemLog
   // ==========================================
-  // productId ProductId?
-  // centsDiff Int?
-  // ==========================================
-  // +++++++  ScheduleLessonProductLog
-  // ==========================================
-  // productId ProductId?
+  // itemId String?
   instructorId String?
   studentId String?
   slotId String?
   // ==========================================
-  // +++++++  CancelScheduleLessonProductLog
+  // +++++++  CancelScheduleLessonItemLog
   // ==========================================
-  // productId ProductId?
+  // itemId String?
   initiator Initiator?
   // ==========================================
-  // +++++++  ReleaseProductFundsLog
+  // +++++++  ReleaseItemFundsLog
   // ==========================================
   // ...
   // ==========================================
-  // +++++++  CancelReleaseProductFundsLog
+  // +++++++  CancelReleaseItemFundsLog
   // ==========================================
-  // productId ProductId?
+  // itemId String?
   // ==========================================
-  // +++++++  VoidProductLog
+  // +++++++  VoidItemLog
   // ==========================================
-  // productId ProductId?
+  // itemId String?
   reason VoidReason?
   // ==========================================
-  // +++++++  CancelVoidProductLog
+  // +++++++  CancelVoidItemLog
   // ==========================================
-  // productId ProductId?
+  // itemId String?
   // ==========================================
-  // +++++++  SetProductRegionLog
+  // +++++++  SetItemRegionLog
   // ==========================================
-  // productId ProductId?
+  // itemId String?
   regionId String?
   // ==========================================
-  // +++++++  NewLessonProductLog
+  // +++++++  NewLessonItemLog
   // ==========================================
   // regionId String?
-  // productId ProductId?
+  productId ProductId?
+  // itemId String?
   productType ProductType?
   role LessonRole?
   durationMinutes Int?
   // cents Int?
   // ==========================================
-  // +++++++  NewCourseProductLog
+  // +++++++  NewCourseItemLog
   // ==========================================
   // regionId String?
   // productId ProductId?
+  // itemId String?
   // productType ProductType?
   state State?
   // cents Int?

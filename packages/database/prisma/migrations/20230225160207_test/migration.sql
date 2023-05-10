@@ -33,7 +33,7 @@ CREATE TYPE "TransactionCategory" AS ENUM ('stripe', 'cash');
 CREATE TYPE "Initiator" AS ENUM ('student', 'instructor', 'support');
 
 -- CreateEnum
-CREATE TYPE "ActivityLogType" AS ENUM ('transactionLog', 'updateByProductPriceLog', 'scheduleLessonProductLog', 'cancelScheduleLessonProductLog', 'releaseProductFundsLog', 'cancelReleaseProductFundsLog', 'voidProductLog', 'cancelVoidProductLog', 'setProductRegionLog', 'newLessonProductLog', 'newCourseProductLog');
+CREATE TYPE "ActivityLogType" AS ENUM ('transactionLog', 'updateByItemPriceLog', 'scheduleLessonItemLog', 'cancelScheduleLessonItemLog', 'releaseItemFundsLog', 'cancelReleaseItemFundsLog', 'voidItemLog', 'cancelVoidItemLog', 'setItemRegionLog', 'newLessonItemLog', 'newCourseProductLog');
 
 -- CreateTable
 CREATE TABLE "User" (

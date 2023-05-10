@@ -50,15 +50,15 @@ export interface TransactionLog extends BaseActivityLog {
   stripeCustomerId?: string | null;
 }
 
-export interface UpdateByProductPriceLog extends BaseActivityLog {
-  type: 'UpdateByProductPriceLog';
-  productId: string;
+export interface UpdateByItemPriceLog extends BaseActivityLog {
+  type: 'UpdateByItemPriceLog';
+  itemId: string;
   centsDiff: number;
 }
 
-export interface ScheduleLessonProductLog extends BaseActivityLog {
-  type: 'ScheduleLessonProductLog';
-  productId: string;
+export interface ScheduleLessonItemLog extends BaseActivityLog {
+  type: 'ScheduleLessonItemLog';
+  itemId: string;
   instructorId: string;
   studentId: string;
   slotId: string;
@@ -66,49 +66,51 @@ export interface ScheduleLessonProductLog extends BaseActivityLog {
   // otherwise the product can have a price mismatch
 }
 
-export interface CancelScheduleLessonProductLog extends BaseActivityLog {
-  type: 'CancelScheduleLessonProductLog';
-  productId: string;
+export interface CancelScheduleLessonItemLog extends BaseActivityLog {
+  type: 'CancelScheduleLessonItemLog';
+  itemId: string;
   initiator: Initiator;
 }
 
-export interface ReleaseProductFundsLog extends BaseActivityLog {
-  type: 'ReleaseProductFundsLog';
-  productId: string;
+export interface ReleaseItemFundsLog extends BaseActivityLog {
+  type: 'ReleaseItemFundsLog';
+  itemId: string;
 }
 
-export interface CancelReleaseProductFundsLog extends BaseActivityLog {
-  type: 'CancelReleaseProductFundsLog';
-  productId: string;
+export interface CancelReleaseItemFundsLog extends BaseActivityLog {
+  type: 'CancelReleaseItemFundsLog';
+  itemId: string;
 }
 
-export interface VoidProductLog extends BaseActivityLog {
-  type: 'VoidProductLog';
-  productId: string;
+export interface VoidItemLog extends BaseActivityLog {
+  type: 'VoidItemLog';
+  itemId: string;
   reason: VoidReason;
 }
-export interface CancelVoidProductLog extends BaseActivityLog {
-  type: 'CancelVoidProductLog';
-  productId: string;
+export interface CancelVoidItemLog extends BaseActivityLog {
+  type: 'CancelVoidItemLog';
+  itemId: string;
 }
-export interface SetProductRegionLog extends BaseActivityLog {
-  type: 'SetProductRegionLog';
-  productId: string;
+export interface SetItemRegionLog extends BaseActivityLog {
+  type: 'SetItemRegionLog';
+  itemId: string;
   regionId: string;
 }
-export interface NewLessonProductLog extends BaseActivityLog {
-  type: 'NewLessonProductLog';
+export interface NewLessonItemLog extends BaseActivityLog {
+  type: 'NewLessonItemLog';
   regionId: string;
   productId: string;
+  itemId: string;
   productType: 'lesson';
   role: LessonRole;
   durationMinutes: number;
   priceCents: number;
 }
-export interface NewCourseProductLog extends BaseActivityLog {
-  type: 'NewCourseProductLog';
+export interface NewCourseItemLog extends BaseActivityLog {
+  type: 'NewCourseItemLog';
   regionId: string;
   productId: string;
+  itemId: string;
   productType: 'course';
   state: State;
   priceCents: number;
@@ -116,18 +118,18 @@ export interface NewCourseProductLog extends BaseActivityLog {
 
 export type ActivityLog =
   | TransactionLog
-  | UpdateByProductPriceLog
-  | ScheduleLessonProductLog
-  | CancelScheduleLessonProductLog
-  | ReleaseProductFundsLog
-  | CancelReleaseProductFundsLog
-  | VoidProductLog
-  | CancelVoidProductLog
-  | NewLessonProductLog
-  | NewCourseProductLog
-  | SetProductRegionLog;
+  | UpdateByItemPriceLog
+  | ScheduleLessonItemLog
+  | CancelScheduleLessonItemLog
+  | ReleaseItemFundsLog
+  | CancelReleaseItemFundsLog
+  | VoidItemLog
+  | CancelVoidItemLog
+  | NewLessonItemLog
+  | NewCourseItemLog
+  | SetItemRegionLog;
 
-export interface NewOrderProductsPayload {
+export interface NewOrderItemsPayload {
   userId: string;
   orderId?: string;
   authorId: string;
@@ -150,6 +152,17 @@ export interface NewOrderTransactionPayload {
   accountId: string;
   orderId: string;
   userId: string;
+  authorId: string;
+}
+
+export interface SetOrderItemPricePayload {
+  currentPriceCents: number;
+  newPriceCents: number;
+  accountId: string;
+  orderId: string;
+  itemId: string;
+  userId: string;
+  note: string;
   authorId: string;
 }
 

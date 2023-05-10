@@ -58,7 +58,7 @@ const ORDER_COLUMNS = [
     getKey: (row: OrderLine) => 'actions',
     getContent: (row: OrderLine) => (
       <div className="flex space-x-2">
-        <Link href={routes.accountOrderNewProducts(row.accountId, row.id)}>
+        <Link href={routes.accountOrderNewItems(row.accountId, row.id)}>
           Add product
         </Link>
         <Link href={routes.accountOrderTransactions(row.accountId, row.id)}>
@@ -97,7 +97,25 @@ const ITEM_COLUMNS = [
   {
     label: 'Actions',
     getKey: (row: ItemLine) => 'actions',
-    getContent: (row: ItemLine) => <></>,
+    getContent: (row: ItemLine) => (
+      <div className="flex space-x-2">
+        <Link
+          href={routes.accountOrderItemVoid(row.accountId, row.orderId, row.id)}
+          variant="error"
+        >
+          Void
+        </Link>
+        <Link
+          href={routes.accountOrderItemSetPrice(
+            row.accountId,
+            row.orderId,
+            row.id
+          )}
+        >
+          Set Price
+        </Link>
+      </div>
+    ),
   },
 ];
 const IDENTITY_FIELD = (row) => row.id;

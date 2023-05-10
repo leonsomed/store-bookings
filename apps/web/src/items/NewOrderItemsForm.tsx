@@ -12,7 +12,6 @@ import { dollarsToCents, formatDollars } from '../services/format';
 import { Checkbox } from '../components/Checkbox';
 import { ItemEntryCard } from './ItemEntryCard';
 import { Alert } from '../components/Alert';
-import { NewOrderProductsPayload } from 'database';
 import { useRouter } from 'next/navigation';
 import { api } from '../services/api';
 import { routes } from '../services/navigation';
@@ -31,18 +30,18 @@ export interface ItemEntry {
   items: Item[];
 }
 
-interface NewOrderProductsFormProps {
+interface NewOrderItemsFormProps {
   products: Product[];
   bundles: Bundle[];
   accountId: string;
   orderId?: string;
 }
 
-interface NewOrderProductsFormState {
+interface NewOrderItemsFormState {
   items: ItemEntry[];
 }
 
-const DEFAULT_FORM_STATE: NewOrderProductsFormState = { items: [] };
+const DEFAULT_FORM_STATE: NewOrderItemsFormState = { items: [] };
 
 const getTotalDollars = (items: ItemEntry[]) =>
   items.reduce(
@@ -54,7 +53,7 @@ const getTotalDollars = (items: ItemEntry[]) =>
     0
   );
 
-const newOrderProductsFormSchema = yup.object().shape({
+const NewOrderItemsFormSchema = yup.object().shape({
   items: yup
     .array(
       yup.object().shape({
@@ -76,16 +75,16 @@ const newOrderProductsFormSchema = yup.object().shape({
     .min(1, 'Please add at least one item'),
 });
 
-export function NewOrderProductsForm({
+export function NewOrderItemsForm({
   products,
   bundles,
   accountId,
   orderId,
-}: NewOrderProductsFormProps) {
+}: NewOrderItemsFormProps) {
   const router = useRouter();
   const handleSubmit = async (
-    values: NewOrderProductsFormState,
-    formik: FormikHelpers<NewOrderProductsFormState>
+    values: NewOrderItemsFormState,
+    formik: FormikHelpers<NewOrderItemsFormState>
   ) => {
     formik.setStatus(undefined);
     formik.setSubmitting(true);
@@ -109,7 +108,7 @@ export function NewOrderProductsForm({
         regionId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO form must ask for the region
         userId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO from must ask for the user, since accounts have multiple
       };
-      await api.newOrderProducts(payload);
+      await api.newOrderItems(payload);
       router?.push(routes.accountDetails(accountId));
     } catch (e) {
       console.error(e);
@@ -136,7 +135,7 @@ export function NewOrderProductsForm({
       isInitialValid={false}
       initialValues={DEFAULT_FORM_STATE}
       onSubmit={handleSubmit}
-      validationSchema={newOrderProductsFormSchema}
+      validationSchema={NewOrderItemsFormSchema}
     >
       {(formikProps) => {
         const handleRemoveItem = (entryIndex: number) => {

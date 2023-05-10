@@ -3,7 +3,7 @@ import { useFormikContext } from 'formik';
 import _ from 'lodash';
 import { SecondaryButton } from '../components/Button';
 import { Input } from '../components/Input';
-import { ItemEntry } from './NewOrderProductsForm';
+import { ItemEntry } from './NewOrderItemsForm';
 import { Select } from '../components/Select';
 
 interface ItemEntryCardProps extends ItemEntry {
