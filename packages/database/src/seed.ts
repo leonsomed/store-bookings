@@ -22,6 +22,7 @@ const DEFAULT_USERS = [
           update: {
             ...user,
           },
+          // @ts-ignore
           create: {
             ...user,
           },
