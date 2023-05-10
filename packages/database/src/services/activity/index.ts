@@ -206,8 +206,34 @@ export class ItemActivityService {
             },
           ],
         };
-      case 'UpdateByProductPriceLog':
       case 'TransactionLog':
+        return {
+          ...state,
+          orderLines: state.orderLines.map((order) => {
+            if (order.id !== log.orderId) {
+              return order;
+            }
+
+            return {
+              ...order,
+              centsTransactionsTotal: order.centsTransactionsTotal + log.cents,
+            };
+          }),
+        };
+      case 'UpdateByProductPriceLog':
+        return {
+          ...state,
+          itemLines: state.itemLines.map((item) => {
+            if (item.id !== log.id) {
+              return item;
+            }
+
+            return {
+              ...item,
+              priceCents: item.priceCents + log.centsDiff,
+            };
+          }),
+        };
       case 'SetProductRegionLog':
       case 'ReleaseProductFundsLog':
       case 'CancelReleaseProductFundsLog':

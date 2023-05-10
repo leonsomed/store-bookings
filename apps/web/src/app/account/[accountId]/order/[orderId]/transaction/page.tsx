@@ -80,7 +80,7 @@ export default async function TransactionsPage({ params }: PageParamsProps) {
           value={formatCentsToDollars(state.transactionsTotal)}
         />
         <LabelPair
-          label="Difference"
+          label="Difference Total"
           value={
             <div
               className={cx('relative', {

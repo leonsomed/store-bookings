@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { ItemLine, OrderLine, getServices } from 'database';
 import { Heading } from '../../../components/Heading';
 import { IconLink, Link } from '../../../components/Link';
@@ -26,7 +27,7 @@ const ORDER_COLUMNS = [
     getContent: (row: OrderLine) => row.description,
   },
   {
-    label: 'Order Total',
+    label: 'Items Total',
     getKey: (row: OrderLine) => row.centsItemsTotal.toString(),
     getContent: (row: OrderLine) => formatCentsToDollars(row.centsItemsTotal),
   },
@@ -35,6 +36,22 @@ const ORDER_COLUMNS = [
     getKey: (row: OrderLine) => row.centsTransactionsTotal.toString(),
     getContent: (row: OrderLine) =>
       formatCentsToDollars(row.centsTransactionsTotal),
+  },
+  {
+    label: 'Difference Total',
+    getKey: (row: OrderLine) =>
+      (row.centsTransactionsTotal - row.centsItemsTotal).toString(),
+    getContent: (row: OrderLine) => (
+      <span
+        className={cx({
+          'text-red-500': row.centsTransactionsTotal - row.centsItemsTotal < 0,
+          'text-green-500':
+            row.centsTransactionsTotal - row.centsItemsTotal > 0,
+        })}
+      >
+        {formatCentsToDollars(row.centsTransactionsTotal - row.centsItemsTotal)}
+      </span>
+    ),
   },
   {
     label: 'Actions',
@@ -96,13 +113,11 @@ export default async function AccountLayout({
   const { orderLines, itemLines } =
     await getServices().itemActivityService.getOrderAndItemLines(accountId);
 
-  console.log(orderLines);
-
   return (
     <SimplePageLayout>
       <div className="flex justify-between">
         <Heading>Orders</Heading>
-        <Link href={routes.accountOrderNew(accountId)}>New Order</Link>
+        <Link href={routes.accountOrderNew(accountId)}>Add Order</Link>
       </div>
       <SimpleTable<OrderLine>
         columns={ORDER_COLUMNS}
