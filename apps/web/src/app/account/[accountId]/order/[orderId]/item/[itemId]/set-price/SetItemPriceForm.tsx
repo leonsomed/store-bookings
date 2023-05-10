@@ -2,7 +2,6 @@
 
 import { Formik, FormikHelpers } from 'formik';
 import * as yup from 'yup';
-import { useState } from 'react';
 import { Input } from '../../../../../../../../components/Input';
 import { Alert } from '../../../../../../../../components/Alert';
 import { useRouter } from 'next/navigation';
@@ -12,10 +11,7 @@ import {
   SecondaryButton,
 } from '../../../../../../../../components/Button';
 import { ItemLine } from 'database';
-import {
-  Heading,
-  Subheading,
-} from '../../../../../../../../components/Heading';
+import { Subheading } from '../../../../../../../../components/Heading';
 
 interface SetItemPriceFormProps {
   item: ItemLine;
