@@ -8,6 +8,7 @@ interface InputProps {
   disabled?: boolean;
   value?: string;
   error?: string;
+  type?: 'text' | 'password' | 'date' | 'time' | 'email' | 'number';
   onChange?: ChangeEventHandler<HTMLInputElement>;
   onBlur?: FocusEventHandler<HTMLInputElement>;
 }
@@ -19,6 +20,7 @@ export function Input({
   disabled,
   value,
   error,
+  type = 'text',
   onChange,
   onBlur,
 }: InputProps) {
@@ -34,9 +36,9 @@ export function Input({
         {label}
       </label>
       <input
-        type="text"
         id={name}
         name={name}
+        type={type}
         className={cx(
           'border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5',
           {

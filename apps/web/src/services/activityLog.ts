@@ -1,5 +1,5 @@
 import type { ActivityLog } from 'database';
-import { formatCentsToDollars } from './format';
+import { formatCentsToDollars, formatDate } from './format';
 
 export const activityLogLabels: { [type: string]: string } = {
   TransactionLog: 'New Transaction',
@@ -15,6 +15,16 @@ export const activityLogLabels: { [type: string]: string } = {
   SetItemRegionLog: 'Region Change',
 };
 
+export const parseSlotId = (slotId: string) => {
+  const parts = slotId.split(':');
+  return {
+    instructorId: parseInt(parts[0]),
+    timestamp: parseInt(parts[1]),
+    address: parseInt(parts[2]),
+    studentId: parseInt(parts[3]),
+  };
+};
+
 export const getActivitySummary = (row: ActivityLog) => {
   let start: string;
 
@@ -27,11 +37,11 @@ export const getActivitySummary = (row: ActivityLog) => {
         row.centsDiff > 0 ? 'Added' : 'Subtracted'
       } ${formatCentsToDollars(row.centsDiff)}`;
       break;
-    // case 'ScheduleLessonItemLog':
-    //   start = `${row.instructorId} ${row.slotId}`;
-    //   break;
+    case 'ScheduleLessonItemLog':
+      start = formatDate(new Date(parseSlotId(row.slotId).timestamp));
+      break;
     // case 'CancelScheduleLessonItemLog':
-    //   start = `Lesson canceled`;
+    //   start = formatDate(new Date(parseSlotId(row.slotId).timestamp));
     //   break;
     // case 'ReleaseItemFundsLog':
     //   start = `Funds released`;

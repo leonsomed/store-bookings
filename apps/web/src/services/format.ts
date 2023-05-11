@@ -26,3 +26,7 @@ export const formatDate = (
 
   return dayjs(date).format('MM/DD/YYYY hh:mm A');
 };
+
+export const timestampFromDateTime = (date: string, time: string) => {
+  return dayjs(`${date} ${time}`, 'MM/DD/YYYY HH:mm').toDate().getTime();
+};

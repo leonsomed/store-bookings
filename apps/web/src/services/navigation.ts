@@ -49,9 +49,9 @@ export const routes = {
     orderId: string,
     itemId: string
   ) => `/account/${accountId}/order/${orderId}/item/${itemId}/cancel-lesson`,
-  accountOrderBookLesson: (
+  accountOrderScheduleLesson: (
     accountId: string,
     orderId: string,
     itemId: string
-  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/book-lesson`,
+  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/schedule-lesson`,
 };

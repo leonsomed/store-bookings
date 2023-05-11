@@ -149,6 +149,17 @@ const ITEM_COLUMNS = [
             >
               Void
             </Link>
+            {row.productType === 'lesson' && (
+              <Link
+                href={routes.accountOrderScheduleLesson(
+                  row.accountId,
+                  row.orderId,
+                  row.id
+                )}
+              >
+                Schedule Lesson
+              </Link>
+            )}
           </>
         )}
         <Link

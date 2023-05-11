@@ -16,9 +16,11 @@ import {
   NewOrderTransactionPayload,
   OrderTransactionState,
   ReverseVoidOrderItemPayload,
+  ScheduleLessonPayload,
   SetOrderItemPricePayload,
   VoidOrderItemPayload,
 } from './types';
+import { createSlotId, parseSlotId } from '../..';
 
 const getInitialItemActivityState = (
   products: Product[]
@@ -272,11 +274,39 @@ export class ItemActivityService {
             };
           }),
         };
+      case 'ScheduleLessonItemLog':
+        return {
+          ...state,
+          itemLines: state.itemLines.map((item) => {
+            if (item.id !== log.itemId) {
+              return item;
+            }
+
+            const { timestamp } = parseSlotId(log.slotId);
+
+            return {
+              ...item,
+              lessonDate: new Date(timestamp),
+            };
+          }),
+        };
+      case 'CancelScheduleLessonItemLog':
+        return {
+          ...state,
+          itemLines: state.itemLines.map((item) => {
+            if (item.id !== log.itemId) {
+              return item;
+            }
+
+            return {
+              ...item,
+              lessonDate: undefined,
+            };
+          }),
+        };
       case 'SetItemRegionLog':
       case 'ReleaseItemFundsLog':
       case 'CancelReleaseItemFundsLog':
-      case 'ScheduleLessonItemLog':
-      case 'CancelScheduleLessonItemLog':
         return state;
       default:
         // @ts-ignore
@@ -464,6 +494,33 @@ export class ItemActivityService {
         ...base,
         type: 'cancelVoidItemLog',
         itemId: payload.itemId,
+      },
+    });
+  }
+
+  async scheduleLesson(payload: ScheduleLessonPayload) {
+    const base = {
+      accountId: payload.accountId,
+      orderId: payload.orderId,
+      userId: payload.userId,
+      authorId: payload.authorId,
+      note: payload.note,
+      timestamp: new Date(),
+    };
+
+    return prisma.activityLog.create({
+      data: {
+        ...base,
+        type: 'scheduleLessonItemLog',
+        itemId: payload.itemId,
+        instructorId: payload.instructorId,
+        studentId: payload.studentId,
+        slotId: createSlotId(
+          payload.instructorId,
+          payload.timestamp,
+          payload.address,
+          payload.studentId
+        ),
       },
     });
   }

@@ -182,6 +182,19 @@ export interface VoidOrderItemPayload {
 
 export type ReverseVoidOrderItemPayload = Omit<VoidOrderItemPayload, 'reason'>;
 
+export interface ScheduleLessonPayload {
+  instructorId: string;
+  studentId: string;
+  timestamp: number;
+  address: string;
+  accountId: string;
+  orderId: string;
+  itemId: string;
+  userId: string;
+  note: string;
+  authorId: string;
+}
+
 export interface OrderTransactionState {
   itemsTotal: number;
   transactionsTotal: number;

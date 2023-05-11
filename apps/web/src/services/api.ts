@@ -1,6 +1,10 @@
 'use client';
 
-import { ReverseVoidOrderItemPayload, VoidOrderItemPayload } from 'database';
+import {
+  ReverseVoidOrderItemPayload,
+  ScheduleLessonPayload,
+  VoidOrderItemPayload,
+} from 'database';
 import {
   NewOrderItemsPayload,
   NewOrderTransactionPayload,
@@ -78,6 +82,18 @@ export const api = {
     return client(
       'POST',
       `/account/${accountId}/order/${orderId}/item/${itemId}/reverse-void/api`,
+      payload
+    );
+  },
+  scheduleLesson: async ({
+    accountId,
+    orderId,
+    itemId,
+    ...payload
+  }: Omit<ScheduleLessonPayload, 'authorId'>) => {
+    return client(
+      'POST',
+      `/account/${accountId}/order/${orderId}/item/${itemId}/schedule-lesson/api`,
       payload
     );
   },
