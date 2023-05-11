@@ -6,11 +6,13 @@ import {
   TransactionCategory,
   ProductId,
   State,
+  Initiator,
 } from '@prisma/client';
 import { prisma } from '../../client';
 import {
   ActivityLog,
   BaseActivityLog,
+  CancelLessonPayload,
   ItemActivityState,
   NewOrderItemsPayload,
   NewOrderTransactionPayload,
@@ -521,6 +523,26 @@ export class ItemActivityService {
           payload.address,
           payload.studentId
         ),
+      },
+    });
+  }
+
+  async cancelLesson(payload: CancelLessonPayload) {
+    const base = {
+      accountId: payload.accountId,
+      orderId: payload.orderId,
+      userId: payload.userId,
+      authorId: payload.authorId,
+      note: payload.note,
+      timestamp: new Date(),
+    };
+
+    return prisma.activityLog.create({
+      data: {
+        ...base,
+        type: 'cancelScheduleLessonItemLog',
+        itemId: payload.itemId,
+        initiator: Initiator.support, // TODO we might not need this anymore
       },
     });
   }

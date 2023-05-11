@@ -160,6 +160,18 @@ const ITEM_COLUMNS = [
                 Schedule Lesson
               </Link>
             )}
+            {row.productType === 'lesson' && row.lessonDate && (
+              <Link
+                href={routes.accountOrderCancelLesson(
+                  row.accountId,
+                  row.orderId,
+                  row.id
+                )}
+                variant="error"
+              >
+                Cancel Lesson
+              </Link>
+            )}
           </>
         )}
         <Link

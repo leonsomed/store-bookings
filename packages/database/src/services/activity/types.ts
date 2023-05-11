@@ -195,6 +195,15 @@ export interface ScheduleLessonPayload {
   authorId: string;
 }
 
+export interface CancelLessonPayload {
+  accountId: string;
+  orderId: string;
+  itemId: string;
+  userId: string;
+  note: string;
+  authorId: string;
+}
+
 export interface OrderTransactionState {
   itemsTotal: number;
   transactionsTotal: number;

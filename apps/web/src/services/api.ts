@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  CancelLessonPayload,
   ReverseVoidOrderItemPayload,
   ScheduleLessonPayload,
   VoidOrderItemPayload,
@@ -94,6 +95,18 @@ export const api = {
     return client(
       'POST',
       `/account/${accountId}/order/${orderId}/item/${itemId}/schedule-lesson/api`,
+      payload
+    );
+  },
+  cancelLesson: async ({
+    accountId,
+    orderId,
+    itemId,
+    ...payload
+  }: Omit<CancelLessonPayload, 'authorId'>) => {
+    return client(
+      'POST',
+      `/account/${accountId}/order/${orderId}/item/${itemId}/cancel-lesson/api`,
       payload
     );
   },
