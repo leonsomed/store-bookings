@@ -1,5 +1,5 @@
 import { uuid } from 'uuidv4';
-import { Services } from '..';
+import { Product, Services } from '..';
 import {
   ActivityLog as DBActivityLog,
   ActivityLogType,
@@ -20,10 +20,16 @@ import {
   VoidOrderItemPayload,
 } from './types';
 
-const INITIAL_ITEM_ACTIVITY_STATE: ItemActivityState = {
+const getInitialItemActivityState = (
+  products: Product[]
+): ItemActivityState => ({
+  products: products.reduce(
+    (acc, product) => ({ ...acc, [product.id]: product }),
+    {}
+  ),
   orderLines: [],
   itemLines: [],
-};
+});
 
 const INITIAL_ORDER_TRANSACTION_STATE: OrderTransactionState = {
   itemsTotal: 0,
@@ -171,10 +177,11 @@ export class ItemActivityService {
         );
         const itemLines = state.itemLines.concat({
           id: log.id,
+          productId: log.productId,
           accountId: log.accountId,
           orderId: log.orderId,
           productType: log.productType,
-          description: log.note,
+          description: state.products[log.productId].description,
           priceCents: log.priceCents,
           purchaseDate: log.timestamp,
           isVoid: false,
@@ -285,11 +292,26 @@ export class ItemActivityService {
     const logs = (
       await prisma.activityLog.findMany({ where: { accountId } })
     ).map(ItemActivityService.formatActivityLog);
+    const products = await this.services.productService.getProducts();
 
     return logs.reduce(
       ItemActivityService.itemActivityReducer,
-      INITIAL_ITEM_ACTIVITY_STATE
+      getInitialItemActivityState(products)
     );
+  }
+
+  async getOrderItemActivityLogs(
+    accountId: string,
+    orderId: string,
+    itemId: string
+  ) {
+    const logs = (
+      await prisma.activityLog.findMany({
+        where: { accountId, orderId, itemId },
+      })
+    ).map(ItemActivityService.formatActivityLog);
+
+    return logs;
   }
 
   async newOrderItems(payload: NewOrderItemsPayload) {

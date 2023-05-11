@@ -42,6 +42,8 @@ export const routes = {
     orderId: string,
     itemId: string
   ) => `/account/${accountId}/order/${orderId}/item/${itemId}/set-price`,
+  accountOrderItemView: (accountId: string, orderId: string, itemId: string) =>
+    `/account/${accountId}/order/${orderId}/item/${itemId}/view`,
   accountOrderCancelLesson: (
     accountId: string,
     orderId: string,

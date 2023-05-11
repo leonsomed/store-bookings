@@ -120,6 +120,11 @@ const ITEM_COLUMNS = [
     getKey: (row: ItemLine) => 'actions',
     getContent: (row: ItemLine) => (
       <div className="flex space-x-2">
+        <Link
+          href={routes.accountOrderItemView(row.accountId, row.orderId, row.id)}
+        >
+          View
+        </Link>
         {row.isVoid ? (
           <>
             <Link
@@ -144,17 +149,17 @@ const ITEM_COLUMNS = [
             >
               Void
             </Link>
-            <Link
-              href={routes.accountOrderItemSetPrice(
-                row.accountId,
-                row.orderId,
-                row.id
-              )}
-            >
-              Set Price
-            </Link>
           </>
         )}
+        <Link
+          href={routes.accountOrderItemSetPrice(
+            row.accountId,
+            row.orderId,
+            row.id
+          )}
+        >
+          Set Price
+        </Link>
       </div>
     ),
   },

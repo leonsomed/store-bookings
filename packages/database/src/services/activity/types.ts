@@ -6,6 +6,7 @@ import {
   TransactionCategory,
   VoidReason,
 } from '@prisma/client';
+import { Product } from '../product/types';
 
 export interface OrderLine {
   id: string;
@@ -20,6 +21,7 @@ export interface ItemLine {
   id: string;
   accountId: string;
   orderId: string;
+  productId: string;
   productType: ProductType;
   purchaseDate: Date;
   lessonDate?: Date;
@@ -29,6 +31,7 @@ export interface ItemLine {
 }
 
 export interface ItemActivityState {
+  products: { [productId: string]: Product };
   orderLines: OrderLine[];
   itemLines: ItemLine[];
 }

@@ -41,7 +41,7 @@ export function SimpleTable<T>({
                     {columns.map((column) => (
                       <td
                         key={column.getKey(row)}
-                        className="whitespace-nowrap px-6 py-4 font-medium"
+                        className="whitespace-nowrap px-6 py-4"
                       >
                         {column.getContent(row, context)}
                       </td>
