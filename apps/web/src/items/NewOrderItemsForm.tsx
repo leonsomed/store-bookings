@@ -198,7 +198,7 @@ export function NewOrderItemsForm({
             onDismiss={router.back}
             onSubmit={formikProps.submitForm}
           >
-            <div className="text-xl">
+            <div className="text-xl text-black dark:text-white">
               Total&nbsp;
               <span className="font-light">
                 {formatDollars(getTotalDollars(formikProps.values.items))}

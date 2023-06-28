@@ -4,7 +4,7 @@ import { Link } from './Link';
 export function Nav() {
   return (
     <nav
-      className="relative flex w-full items-center justify-between bg-white py-4 text-neutral-600 shadow-lg hover:text-neutral-700 focus:text-neutral-700 dark:bg-neutral-600 dark:text-neutral-200"
+      className="relative flex w-full items-center justify-between bg-blue-600 py-4 text-neutral-600 shadow-lg hover:text-neutral-700 focus:text-neutral-700 dark:bg-zinc-900 dark:text-neutral-200"
       data-te-navbar-ref
     >
       <div

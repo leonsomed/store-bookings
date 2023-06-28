@@ -96,7 +96,13 @@ const ITEM_COLUMNS = [
     label: 'Order ID',
     getKey: (row: ItemLine) => row.orderId,
     getContent: (row: ItemLine) => (
-      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+      <ColoredText
+        color={
+          row.isVoid
+            ? 'text-gray-400 dark:text-gray-600'
+            : 'text-black dark:text-white'
+        }
+      >
         <IDLazy id={row.orderId} />
       </ColoredText>
     ),
@@ -105,7 +111,13 @@ const ITEM_COLUMNS = [
     label: 'Purchase Date',
     getKey: (row: ItemLine) => row.purchaseDate.toString(),
     getContent: (row: ItemLine) => (
-      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+      <ColoredText
+        color={
+          row.isVoid
+            ? 'text-gray-400 dark:text-gray-600'
+            : 'text-black dark:text-white'
+        }
+      >
         {formatDate(row.purchaseDate)}
       </ColoredText>
     ),
@@ -114,7 +126,13 @@ const ITEM_COLUMNS = [
     label: 'Description',
     getKey: (row: ItemLine) => row.description,
     getContent: (row: ItemLine) => (
-      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+      <ColoredText
+        color={
+          row.isVoid
+            ? 'text-gray-400 dark:text-gray-600'
+            : 'text-black dark:text-white'
+        }
+      >
         {row.description}
       </ColoredText>
     ),
@@ -123,7 +141,13 @@ const ITEM_COLUMNS = [
     label: 'Lesson Date',
     getKey: (row: ItemLine) => row.lessonDate?.toString(),
     getContent: (row: ItemLine) => (
-      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+      <ColoredText
+        color={
+          row.isVoid
+            ? 'text-gray-400 dark:text-gray-600'
+            : 'text-black dark:text-white'
+        }
+      >
         {formatDate(row.lessonDate)}
       </ColoredText>
     ),
@@ -132,7 +156,13 @@ const ITEM_COLUMNS = [
     label: 'Price',
     getKey: (row: ItemLine) => row.priceCents.toString(),
     getContent: (row: ItemLine) => (
-      <ColoredText color={row.isVoid ? 'text-gray-400' : 'text-black'}>
+      <ColoredText
+        color={
+          row.isVoid
+            ? 'text-gray-400 dark:text-gray-600'
+            : 'text-black dark:text-white'
+        }
+      >
         {formatCentsToDollars(row.priceCents)}
       </ColoredText>
     ),

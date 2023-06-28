@@ -29,8 +29,8 @@ export function Input({
       <label
         htmlFor={name}
         className={cx('block mb-2 text-sm font-medium', {
-          'text-gray-900': !disabled,
-          'text-gray-400': disabled,
+          'text-gray-900 dark:text-gray-400': !disabled,
+          'text-gray-400 dark:text-gray-900': disabled,
         })}
       >
         {label}
@@ -40,15 +40,13 @@ export function Input({
         name={name}
         type={type}
         className={cx(
-          'border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5',
+          'border dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5',
           {
-            'border-red-400': error,
-            'bg-red-50': error,
-            'bg-gray-100': disabled,
-            'text-gray-400': disabled,
-            'bg-white': !disabled && !error,
-            'border-gray-300': !disabled && !error,
-            'text-gray-900': !disabled && !error,
+            'border-red-400 bg-red-50 dark:bg-red-300': error,
+            'bg-gray-100 text-gray-400 dark:text-white dark:bg-zinc-900':
+              disabled,
+            'bg-white dark:bg-zinc-700 text-gray-900 border-gray-300':
+              !disabled && !error,
           }
         )}
         placeholder={placeholder}

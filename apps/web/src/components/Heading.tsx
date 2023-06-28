@@ -4,7 +4,7 @@ interface HeadingProps {
 
 export const Heading = ({ children }: HeadingProps) => {
   return (
-    <h1 className="m-0 text-3xl font-medium leading-tight text-primary">
+    <h1 className="m-0 text-3xl font-medium leading-tight text-primary dark:text-white">
       {children}
     </h1>
   );
@@ -12,7 +12,7 @@ export const Heading = ({ children }: HeadingProps) => {
 
 export const Subheading = ({ children }: HeadingProps) => {
   return (
-    <h1 className="m-0 text-xl font-medium leading-tight text-black">
+    <h1 className="m-0 text-xl font-medium leading-tight text-black dark:text-white">
       {children}
     </h1>
   );
