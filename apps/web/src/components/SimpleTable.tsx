@@ -1,3 +1,5 @@
+import cx from 'classnames';
+
 interface Column<T> {
   label: string;
   getKey: (row: Record<string, any>) => string;
@@ -8,6 +10,7 @@ interface SimpleTableProps<T> {
   context?: T;
   columns: Column<T>[];
   data: Record<string, any>[];
+  disableHighlight?: boolean;
   getRowId: (row: Record<string, any>) => string;
 }
 
@@ -15,6 +18,7 @@ export function SimpleTable<T>({
   columns,
   data,
   context,
+  disableHighlight,
   getRowId,
 }: SimpleTableProps<T>) {
   return (
@@ -36,7 +40,10 @@ export function SimpleTable<T>({
                 {data.map((row) => (
                   <tr
                     key={getRowId(row)}
-                    className="border-b transition duration-300 ease-in-out hover:bg-neutral-100"
+                    className={cx(
+                      'border-b transition duration-300 ease-in-out',
+                      { ['hover:bg-neutral-100']: !disableHighlight }
+                    )}
                   >
                     {columns.map((column) => (
                       <td

@@ -16,6 +16,7 @@ export interface PageParamsProps {
 }
 
 export const routes = {
+  home: () => '/',
   accounts: () => '/account',
   accountDetails: (accountId: string) => `/account/${accountId}`,
   accountOrderNew: (accountId: string) => `/account/${accountId}/order`,

@@ -5,6 +5,13 @@ import { IconLink } from '../../components/Link';
 import { SimplePageLayout } from '../../components/SimplePageLayout';
 import { SimpleTable } from '../../components/SimpleTable';
 import { routes } from '../../services/navigation';
+import { SimpleCard } from '../../components/SimpleCard';
+import dynamic from 'next/dynamic';
+import type { IDProps } from '../../components/ID';
+
+const IDLazy = dynamic<IDProps>(() => import('../../components/ID'), {
+  ssr: false,
+});
 
 async function getAccounts() {
   // const accounts = await prisma.account.findMany({});
@@ -15,7 +22,11 @@ async function getAccounts() {
 }
 
 const ACCOUNT_COLUMNS = [
-  { label: 'ID', getKey: (row) => row.id, getContent: (row) => row.id },
+  {
+    label: 'ID',
+    getKey: (row) => row.id,
+    getContent: (row) => <IDLazy id={row.id} />,
+  },
   { label: 'Name', getKey: (row) => row.name, getContent: (row) => row.name },
   {
     label: 'Actions',
@@ -34,12 +45,15 @@ export default async function AccountPage() {
 
   return (
     <SimplePageLayout>
-      <Heading>Accounts</Heading>
-      <SimpleTable
-        columns={ACCOUNT_COLUMNS}
-        data={accounts}
-        getRowId={IDENTITY_FIELD}
-      />
+      <SimpleCard>
+        <Heading>Accounts</Heading>
+        <SimpleTable
+          disableHighlight
+          columns={ACCOUNT_COLUMNS}
+          data={accounts}
+          getRowId={IDENTITY_FIELD}
+        />
+      </SimpleCard>
     </SimplePageLayout>
   );
 }
