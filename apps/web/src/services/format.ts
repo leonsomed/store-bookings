@@ -1,3 +1,4 @@
+import type { Address } from 'database';
 import dayjs from 'dayjs';
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -30,3 +31,15 @@ export const formatDate = (
 export const timestampFromDateTime = (date: string, time: string) => {
   return dayjs(`${date} ${time}`, 'MM/DD/YYYY HH:mm').toDate().getTime();
 };
+
+export function getAddressLine(address: Address) {
+  return [
+    address.street,
+    address.street2,
+    address.city,
+    address.state,
+    address.zip,
+  ]
+    .filter(Boolean)
+    .join(', ');
+}

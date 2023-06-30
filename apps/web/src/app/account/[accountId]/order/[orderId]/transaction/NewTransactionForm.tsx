@@ -81,7 +81,9 @@ export function NewTransactionForm({
         userId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO from must ask for the user, since accounts have multiple
       };
       await api.newOrderTransaction(payload);
-      router?.refresh();
+      setTimeout(() => {
+        router.refresh();
+      }, 3000);
       formik.resetForm();
     } catch (e) {
       console.error(e);

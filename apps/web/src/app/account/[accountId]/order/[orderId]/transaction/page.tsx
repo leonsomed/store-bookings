@@ -67,7 +67,7 @@ export default async function TransactionsPage({ params }: PageParamsProps) {
   const diff = state.transactionsTotal - state.itemsTotal;
 
   return (
-    <ModalWrapper size="lg" closeHref={routes.accountDetails(accountId)}>
+    <ModalWrapper size="lg" closeHref={routes.account.details(accountId)}>
       <Subheading>Order #{orderId}</Subheading>
       <br />
       <div className="w-[200px]">

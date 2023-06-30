@@ -1,4 +1,4 @@
-export type ParamType = 'accountId' | 'orderId' | 'itemId';
+export type ParamType = 'accountId' | 'orderId' | 'itemId' | 'instructorId';
 
 export function getParam(
   key: ParamType,
@@ -17,42 +17,38 @@ export interface PageParamsProps {
 
 export const routes = {
   home: () => '/',
-  accounts: () => '/account',
-  accountDetails: (accountId: string) => `/account/${accountId}`,
-  accountOrderNew: (accountId: string) => `/account/${accountId}/order`,
-  accountOrderDetails: (accountId: string, orderId: string) =>
-    `/account/${accountId}/order/${orderId}`,
-  accountOrderNewItems: (accountId: string, orderId: string) =>
-    `/account/${accountId}/order/${orderId}/item`,
-  accountOrderTransactions: (accountId: string, orderId: string) =>
-    `/account/${accountId}/order/${orderId}/transaction`,
-  accountOrderItemDetails: (
-    accountId: string,
-    orderId: string,
-    itemId: string
-  ) => `/account/${accountId}/order/${orderId}/item/${itemId}`,
-  accountOrderItemVoid: (accountId: string, orderId: string, itemId: string) =>
-    `/account/${accountId}/order/${orderId}/item/${itemId}/void`,
-  accountOrderItemReverseVoid: (
-    accountId: string,
-    orderId: string,
-    itemId: string
-  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/reverse-void`,
-  accountOrderItemSetPrice: (
-    accountId: string,
-    orderId: string,
-    itemId: string
-  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/set-price`,
-  accountOrderItemView: (accountId: string, orderId: string, itemId: string) =>
-    `/account/${accountId}/order/${orderId}/item/${itemId}/view`,
-  accountOrderCancelLesson: (
-    accountId: string,
-    orderId: string,
-    itemId: string
-  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/cancel-lesson`,
-  accountOrderScheduleLesson: (
-    accountId: string,
-    orderId: string,
-    itemId: string
-  ) => `/account/${accountId}/order/${orderId}/item/${itemId}/schedule-lesson`,
+  account: {
+    home: () => '/account',
+    details: (accountId: string) => `/account/${accountId}`,
+    newOrder: (accountId: string) => `/account/${accountId}/order/new`,
+    newOrderItem: (accountId: string, orderId: string) =>
+      `/account/${accountId}/order/${orderId}/item/new`,
+    orderDetails: (accountId: string, orderId: string) =>
+      `/account/${accountId}/order/${orderId}`,
+    orderTransactions: (accountId: string, orderId: string) =>
+      `/account/${accountId}/order/${orderId}/transaction`,
+    orderItemDetails: (accountId: string, orderId: string, itemId: string) =>
+      `/account/${accountId}/order/${orderId}/item/${itemId}`,
+    orderItemVoid: (accountId: string, orderId: string, itemId: string) =>
+      `/account/${accountId}/order/${orderId}/item/${itemId}/void`,
+    orderItemReverseVoid: (
+      accountId: string,
+      orderId: string,
+      itemId: string
+    ) => `/account/${accountId}/order/${orderId}/item/${itemId}/reverse-void`,
+    orderItemSetPrice: (accountId: string, orderId: string, itemId: string) =>
+      `/account/${accountId}/order/${orderId}/item/${itemId}/set-price`,
+    orderItemView: (accountId: string, orderId: string, itemId: string) =>
+      `/account/${accountId}/order/${orderId}/item/${itemId}/view`,
+    orderCancelLesson: (accountId: string, orderId: string, itemId: string) =>
+      `/account/${accountId}/order/${orderId}/item/${itemId}/cancel-lesson`,
+    orderScheduleLesson: (accountId: string, orderId: string, itemId: string) =>
+      `/account/${accountId}/order/${orderId}/item/${itemId}/schedule-lesson`,
+  },
+  instructor: {
+    home: () => '/instructor',
+    details: (instructorId: string) => `/instructor/${instructorId}`,
+    edit: (instructorId: string) => `/instructor/${instructorId}/edit`,
+    newInstructor: () => `/instructor/new`,
+  },
 };

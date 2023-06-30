@@ -1,4 +1,4 @@
-import { Address } from '@prisma/client';
+import type { Address } from '@prisma/client';
 import { Services } from '..';
 import { prisma } from '../../client';
 

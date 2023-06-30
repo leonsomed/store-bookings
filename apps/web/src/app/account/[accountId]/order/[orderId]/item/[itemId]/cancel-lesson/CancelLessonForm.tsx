@@ -54,7 +54,9 @@ export function CancelLessonForm({
       };
       await api.cancelLesson(payload);
       router.back();
-      router.refresh();
+      setTimeout(() => {
+        router.refresh();
+      }, 3000);
     } catch (e) {
       console.error(e);
       formik.setStatus({ message: 'There was a problem, please try again.' });

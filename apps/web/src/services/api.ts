@@ -2,6 +2,7 @@
 
 import {
   CancelLessonPayload,
+  NewInstructorPayload,
   ReverseVoidOrderItemPayload,
   ScheduleLessonPayload,
   VoidOrderItemPayload,
@@ -33,6 +34,11 @@ const client = async (method: 'POST' | 'GET', url: string, payload: any) => {
 };
 
 export const api = {
+  instructor: {
+    create: async (payload: NewInstructorPayload) => {
+      return client('POST', `/instructor/new/api`, payload);
+    },
+  },
   newOrderItems: async ({
     accountId,
     ...payload

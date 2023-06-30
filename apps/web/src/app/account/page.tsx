@@ -14,10 +14,7 @@ const IDLazy = dynamic<IDProps>(() => import('../../components/ID'), {
 });
 
 async function getAccounts() {
-  // const accounts = await prisma.account.findMany({});
-  const accounts = [
-    { id: '6b4a4de5-41b2-47bf-a7a2-4bbfcfa0ed39', name: 'Some account' },
-  ];
+  const accounts = await prisma.account.findMany({});
   return accounts;
 }
 
@@ -32,7 +29,7 @@ const ACCOUNT_COLUMNS = [
     label: 'Actions',
     getKey: (row) => row.id + row.name,
     getContent: (row) => (
-      <IconLink href={routes.accountDetails(row.id)}>
+      <IconLink href={routes.account.details(row.id)}>
         <ExternalLinkIcon />
       </IconLink>
     ),

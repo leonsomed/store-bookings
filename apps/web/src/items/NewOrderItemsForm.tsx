@@ -109,7 +109,7 @@ export function NewOrderItemsForm({
         userId: 'c71d0998-1871-4e10-a76d-13d50ab76f54', // TODO from must ask for the user, since accounts have multiple
       };
       await api.newOrderItems(payload);
-      router?.push(routes.accountDetails(accountId));
+      router?.push(routes.account.details(accountId));
     } catch (e) {
       console.error(e);
       formik.setStatus({ message: 'There was a problem, please try again.' });

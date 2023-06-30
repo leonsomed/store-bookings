@@ -76,14 +76,14 @@ const ORDER_COLUMNS = [
         <LinkButton
           borderless
           tooltipTitle="Add product to order"
-          href={routes.accountOrderNewItems(row.accountId, row.id)}
+          href={routes.account.newOrderItem(row.accountId, row.id)}
         >
           <AddProductIcon />
         </LinkButton>
         <LinkButton
           borderless
           tooltipTitle="View transactions"
-          href={routes.accountOrderTransactions(row.accountId, row.id)}
+          href={routes.account.orderTransactions(row.accountId, row.id)}
         >
           <TransactionsIcon />
         </LinkButton>
@@ -175,7 +175,11 @@ const ITEM_COLUMNS = [
         <LinkButton
           borderless
           tooltipTitle="View details"
-          href={routes.accountOrderItemView(row.accountId, row.orderId, row.id)}
+          href={routes.account.orderItemView(
+            row.accountId,
+            row.orderId,
+            row.id
+          )}
         >
           <ViewIcon />
         </LinkButton>
@@ -184,7 +188,7 @@ const ITEM_COLUMNS = [
             <LinkButton
               borderless
               tooltipTitle="Reverse void item"
-              href={routes.accountOrderItemReverseVoid(
+              href={routes.account.orderItemReverseVoid(
                 row.accountId,
                 row.orderId,
                 row.id
@@ -198,7 +202,7 @@ const ITEM_COLUMNS = [
             <LinkButton
               borderless
               tooltipTitle="Void item"
-              href={routes.accountOrderItemVoid(
+              href={routes.account.orderItemVoid(
                 row.accountId,
                 row.orderId,
                 row.id
@@ -211,7 +215,7 @@ const ITEM_COLUMNS = [
               <LinkButton
                 borderless
                 tooltipTitle="Schedule lesson"
-                href={routes.accountOrderScheduleLesson(
+                href={routes.account.orderScheduleLesson(
                   row.accountId,
                   row.orderId,
                   row.id
@@ -224,7 +228,7 @@ const ITEM_COLUMNS = [
               <LinkButton
                 borderless
                 tooltipTitle="Cancel lesson"
-                href={routes.accountOrderCancelLesson(
+                href={routes.account.orderCancelLesson(
                   row.accountId,
                   row.orderId,
                   row.id
@@ -239,7 +243,7 @@ const ITEM_COLUMNS = [
         <LinkButton
           borderless
           tooltipTitle="Set item price"
-          href={routes.accountOrderItemSetPrice(
+          href={routes.account.orderItemSetPrice(
             row.accountId,
             row.orderId,
             row.id
@@ -271,7 +275,7 @@ export default async function AccountLayout({
           <Heading>Orders</Heading>
           <LinkButton
             variant="primary"
-            href={routes.accountOrderNew(accountId)}
+            href={routes.account.newOrder(accountId)}
           >
             Add Order
           </LinkButton>

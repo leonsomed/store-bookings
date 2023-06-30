@@ -50,7 +50,7 @@ export default async function ViewPage({ params }: PageParamsProps) {
   ]);
 
   return (
-    <ModalWrapper size="lg" closeHref={routes.accountDetails(accountId)}>
+    <ModalWrapper size="lg" closeHref={routes.account.details(accountId)}>
       <br />
       <Subheading>Summary</Subheading>
       <br />
