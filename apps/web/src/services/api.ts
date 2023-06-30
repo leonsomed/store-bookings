@@ -3,9 +3,12 @@
 import {
   CancelLessonPayload,
   NewInstructorPayload,
+  EditInstructorPayload,
   ReverseVoidOrderItemPayload,
   ScheduleLessonPayload,
   VoidOrderItemPayload,
+  NewAddressPayload,
+  NewAddressResponse,
 } from 'database';
 import {
   NewOrderItemsPayload,
@@ -33,10 +36,24 @@ const client = async (method: 'POST' | 'GET', url: string, payload: any) => {
   return data;
 };
 
+export interface ApiResponse<T> {
+  data: T;
+}
+
 export const api = {
   instructor: {
     create: async (payload: NewInstructorPayload) => {
       return client('POST', `/instructor/new/api`, payload);
+    },
+    edit: async ({ id, ...payload }: EditInstructorPayload) => {
+      return client('POST', `/instructor/${id}/edit/api`, payload);
+    },
+  },
+  address: {
+    create: async (
+      payload: NewAddressPayload
+    ): Promise<ApiResponse<NewAddressResponse>> => {
+      return client('POST', `/address/api`, payload);
     },
   },
   newOrderItems: async ({

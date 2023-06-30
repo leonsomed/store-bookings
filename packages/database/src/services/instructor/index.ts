@@ -1,5 +1,10 @@
 import { uuid } from 'uuidv4';
-import { NewInstructorPayload, Product, Services } from '..';
+import {
+  EditInstructorPayload,
+  NewInstructorPayload,
+  Product,
+  Services,
+} from '..';
 import { prisma } from '../../client';
 
 export class InstructorService {
@@ -24,7 +29,35 @@ export class InstructorService {
         id: uuid(),
         userId: user.id,
       },
-      include: { user: true },
+      include: { user: { include: { address: true } } },
+    });
+  }
+
+  async editInstructor({ id, ...payload }: EditInstructorPayload) {
+    const instructor = await prisma.instructor.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!instructor) {
+      throw new Error(`Instructor not found ${id}`);
+    }
+
+    // TODO if addressId changes, then update the isochrone
+
+    await prisma.user.update({
+      where: {
+        id: instructor.userId,
+      },
+      data: payload,
+    });
+
+    return await prisma.instructor.findFirst({
+      where: {
+        id,
+      },
+      include: { user: { include: { address: true } } },
     });
   }
 }

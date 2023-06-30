@@ -7,9 +7,4 @@ export class RegionService {
   init(services: Services) {
     this.services = services;
   }
-
-  async geocodeAddress(address: Address): Promise<[number, number]> {
-    // TODO call mapbox geocoding api
-    return [-116.9693364, 32.5089527];
-  }
 }

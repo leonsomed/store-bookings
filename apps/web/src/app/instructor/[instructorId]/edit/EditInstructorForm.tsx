@@ -3,50 +3,62 @@
 import { Formik, FormikHelpers } from 'formik';
 import * as yup from 'yup';
 import { useRouter } from 'next/navigation';
-import { api } from '../../../services/api';
-import { Subheading } from '../../../components/Heading';
-import { Input } from '../../../components/Input';
-import { PrimaryButton, SecondaryButton } from '../../../components/Button';
-import { Alert } from '../../../components/Alert';
-import { NewInstructorPayload } from 'database';
+import { api } from '../../../../services/api';
+import { Subheading } from '../../../../components/Heading';
+import { Input } from '../../../../components/Input';
+import { PrimaryButton, SecondaryButton } from '../../../../components/Button';
+import { Alert } from '../../../../components/Alert';
+import { Address, EditInstructorPayload } from 'database';
+import { FullInstructor } from './page';
+import { getAddressLine } from '../../../../services/format';
+import { AddressSearchBox } from '../../../../components/AddressSearchBox';
 
-interface NewInstructorFormProps {}
+interface EditInstructorFormProps {
+  instructor: FullInstructor;
+}
 
-interface NewInstructorFormState {
+interface EditInstructorFormState {
   email: string;
   firstName: string;
   lastName: string;
+  addressId: string;
 }
 
-const getDefaultFormState = (): NewInstructorFormState => ({
-  email: '',
-  firstName: '',
-  lastName: '',
+const getDefaultFormState = (
+  instructor: FullInstructor
+): EditInstructorFormState => ({
+  email: instructor.user.email,
+  firstName: instructor.user.firstName,
+  lastName: instructor.user.lastName,
+  addressId: instructor.user.addressId,
 });
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   firstName: yup.string().required(),
   lastName: yup.string().required(),
+  addressId: yup.string().required(),
 });
 
-export function NewInstructorForm(props: NewInstructorFormProps) {
+export function EditInstructorForm({ instructor }: EditInstructorFormProps) {
   const router = useRouter();
 
   const handleSubmit = async (
-    values: NewInstructorFormState,
-    formik: FormikHelpers<NewInstructorFormState>
+    values: EditInstructorFormState,
+    formik: FormikHelpers<EditInstructorFormState>
   ) => {
     formik.setStatus(undefined);
     formik.setSubmitting(true);
 
     try {
-      const payload: NewInstructorPayload = {
+      const payload: EditInstructorPayload = {
+        id: instructor.id,
         email: values.email,
         firstName: values.firstName,
         lastName: values.lastName,
+        addressId: values.addressId,
       };
-      await api.instructor.create(payload);
+      await api.instructor.edit(payload);
       router.back();
       setTimeout(() => {
         router.refresh();
@@ -61,7 +73,7 @@ export function NewInstructorForm(props: NewInstructorFormProps) {
   return (
     <Formik
       isInitialValid={false}
-      initialValues={getDefaultFormState()}
+      initialValues={getDefaultFormState(instructor)}
       onSubmit={handleSubmit}
       validationSchema={schema}
     >
@@ -69,7 +81,7 @@ export function NewInstructorForm(props: NewInstructorFormProps) {
         return (
           <>
             <div className="flex flex-col space-y-2">
-              <Subheading>New Instructor</Subheading>
+              <Subheading>Edit Instructor</Subheading>
               <br />
               <Input
                 label="Email"
@@ -97,13 +109,20 @@ export function NewInstructorForm(props: NewInstructorFormProps) {
                 onChange={formikProps.handleChange}
                 onBlur={formikProps.handleBlur}
               />
+              <br />
+              <AddressSearchBox
+                initialAddress={getAddressLine(instructor.user.address)}
+                onAddress={(response) => {
+                  formikProps.setFieldValue('addressId', response.address.id);
+                }}
+              />
             </div>
             <div className="flex justify-end space-x-2 mt-4">
               <PrimaryButton
                 disabled={formikProps.isSubmitting}
                 onClick={formikProps.submitForm}
               >
-                Create
+                Save
               </PrimaryButton>
               <SecondaryButton
                 disabled={formikProps.isSubmitting}

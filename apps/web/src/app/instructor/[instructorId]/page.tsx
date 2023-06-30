@@ -24,7 +24,6 @@ async function getInstructor(id: string) {
 export default async function InstructorPage({ params }: PageParamsProps) {
   const instructorId = getParam('instructorId', params);
   const instructor = await getInstructor(instructorId);
-  console.log(instructor);
 
   return (
     <SimplePageLayout>
@@ -39,7 +38,7 @@ export default async function InstructorPage({ params }: PageParamsProps) {
           </LinkButton>
         </div>
         <br />
-        <div className="w-[400px]">
+        <div className="w-[500px]">
           <LabelPair label="Email" value={instructor.user.email} />
           <LabelPair label="First Name" value={instructor.user.firstName} />
           <LabelPair label="Last Name" value={instructor.user.lastName} />
