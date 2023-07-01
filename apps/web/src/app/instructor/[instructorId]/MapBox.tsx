@@ -64,7 +64,6 @@ export function MapBox({ className, center, geojson }: MapBoxProps) {
       });
     }
 
-    console.log({ center, geojson });
     const marker = new Marker().setLngLat(center).addTo(map);
 
     mapRef.current = map;

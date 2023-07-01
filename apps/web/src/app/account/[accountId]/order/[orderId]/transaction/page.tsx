@@ -41,7 +41,7 @@ const TRANSACTION_COLUMNS = [
   {
     label: 'Note',
     getKey: (row: TransactionLog) => row.note,
-    getContent: (row: TransactionLog) => (console.log(row.note), row.note),
+    getContent: (row: TransactionLog) => row.note,
   },
   {
     label: 'Stripe Charge ID',
