@@ -11,6 +11,7 @@ import { LabelPair } from '../../../components/LabelPair';
 import { LinkButton } from '../../../components/Link';
 import { getAddressLine } from '../../../services/format';
 import { MapBox } from './MapBox';
+import { getMapLink } from '../../../services/mapbox';
 
 export const REVALIDATE_SECONDS = 1;
 
@@ -30,7 +31,6 @@ async function getInstructorDetails(id: string) {
 export default async function InstructorPage({ params }: PageParamsProps) {
   const instructorId = getParam('instructorId', params);
   const { instructor, geo } = await getInstructorDetails(instructorId);
-  console.log(geo);
 
   return (
     <SimplePageLayout>
@@ -52,7 +52,15 @@ export default async function InstructorPage({ params }: PageParamsProps) {
             <LabelPair label="Last Name" value={instructor.user.lastName} />
             <LabelPair
               label="Address"
-              value={getAddressLine(instructor.user.address)}
+              value={
+                <a
+                  className="underline text-sky-500"
+                  href={getMapLink(geo.coordinates)}
+                  target="_blank"
+                >
+                  {getAddressLine(instructor.user.address)}
+                </a>
+              }
             />
           </div>
           <MapBox

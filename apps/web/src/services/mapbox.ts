@@ -13,3 +13,7 @@ function DummyMap() {
 }
 
 export type MapType = ReturnType<typeof DummyMap>;
+
+export function getMapLink(coordinates: [number, number], zoom = 12) {
+  return `http://maps.google.com/maps?q=loc:${coordinates[1]},${coordinates[0]}`;
+}
