@@ -3,6 +3,7 @@ import { AddressService } from './address';
 import { ItemActivityService } from './activity';
 import { ProductService } from './product';
 import { InstructorService } from './instructor';
+import { MapboxService } from './mapbox';
 
 export * from './product/types';
 export * from './activity/types';
@@ -15,6 +16,7 @@ export interface Services {
   itemActivityService: ItemActivityService;
   productService: ProductService;
   instructorService: InstructorService;
+  mapboxService: MapboxService;
 }
 
 export function getServices() {
@@ -23,6 +25,7 @@ export function getServices() {
   const itemActivityService = new ItemActivityService();
   const productService = new ProductService();
   const instructorService = new InstructorService();
+  const mapboxService = new MapboxService();
 
   const services = {
     regionService,
@@ -30,6 +33,7 @@ export function getServices() {
     itemActivityService,
     productService,
     instructorService,
+    mapboxService,
   };
 
   regionService.init(services);
@@ -37,6 +41,7 @@ export function getServices() {
   itemActivityService.init(services);
   productService.init(services);
   instructorService.init(services);
+  mapboxService.init(services);
 
   return services;
 }

@@ -25,4 +25,57 @@ export class AddressService {
 
     return { address: doc, coordinates: address.coordinates };
   }
+
+  async getAddressGeo(
+    addressId: string,
+    options: { coordinates?: boolean; isochrone?: boolean }
+  ) {
+    const select = [
+      ...(options.coordinates
+        ? ['ST_X(coords) AS lat, ST_Y(coords) AS lng']
+        : []),
+      ...(options.isochrone ? ['ST_AsGeoJson(geo) AS isochrone'] : []),
+    ];
+
+    const result = (await prisma.$queryRawUnsafe(
+      `SELECT ${select.join(',')} FROM "Address" WHERE id='${addressId}'`
+    )) as {
+      lat?: number;
+      lng?: number;
+      isochrone?: string;
+    }[];
+
+    return {
+      coordinates:
+        result[0].lat && result[0].lng
+          ? ([result[0].lat, result[0].lng] as [number, number])
+          : undefined,
+      isochrone: result[0].isochrone
+        ? (JSON.parse(result[0].isochrone) as {
+            type: string;
+            coordinates: number[][][];
+          })
+        : undefined,
+    };
+  }
+
+  async updateIsochroneForAddress(addressId: string, minutes: number) {
+    const { coordinates } = await this.services.addressService.getAddressGeo(
+      addressId,
+      { coordinates: true }
+    );
+
+    if (!coordinates) {
+      throw new Error(`Address ${addressId} does not have coordinates`);
+    }
+
+    const geomtery =
+      await this.services.mapboxService.getIsochroneForCoordinates(
+        coordinates,
+        minutes
+      );
+    await prisma.$executeRaw`UPDATE "Address" SET geo = ST_GeomFromGeoJSON(${JSON.stringify(
+      geomtery
+    )}) WHERE id = ${addressId}`;
+  }
 }

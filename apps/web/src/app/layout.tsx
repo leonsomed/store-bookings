@@ -1,4 +1,4 @@
-import * as te from 'tw-elements';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import './globals.css';
 
 export default function RootLayout({

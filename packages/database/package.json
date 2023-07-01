@@ -24,10 +24,12 @@
     "studio": "prisma studio"
   },
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.15.2",
     "@prisma/client": "^4.10.1",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
+    "@types/mapbox__mapbox-sdk": "^0.13.4",
     "config": "*",
     "eslint": "^8.12.0",
     "prisma": "^4.10.1",

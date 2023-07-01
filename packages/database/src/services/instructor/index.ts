@@ -1,10 +1,5 @@
 import { uuid } from 'uuidv4';
-import {
-  EditInstructorPayload,
-  NewInstructorPayload,
-  Product,
-  Services,
-} from '..';
+import { EditInstructorPayload, NewInstructorPayload, Services } from '..';
 import { prisma } from '../../client';
 
 export class InstructorService {
@@ -38,13 +33,19 @@ export class InstructorService {
       where: {
         id,
       },
+      include: { user: true },
     });
 
     if (!instructor) {
       throw new Error(`Instructor not found ${id}`);
     }
 
-    // TODO if addressId changes, then update the isochrone
+    if (payload.addressId && instructor.user.addressId !== payload.addressId) {
+      await this.services.addressService.updateIsochroneForAddress(
+        payload.addressId,
+        30
+      );
+    }
 
     await prisma.user.update({
       where: {

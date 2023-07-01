@@ -109,6 +109,7 @@ model Address {
   zip String
   country String
   coords Unsupported("geometry(Point, 4326)")?
+  geo Unsupported("geometry(Polygon, 4326)")?
 
   slots LessonSlot[]
   users User[]
